@@ -71,11 +71,13 @@ class Request
     /**
      * Checks if the request body contains JSON data.
      *
-     * @return bool True if the request body has a Content-Type of "application/json", otherwise false.
+     * @return bool True if the request body has a Content-Type containing "application/json", otherwise false.
      */
     public function isJson(): bool
     {
-        return $this->server('CONTENT_TYPE') === "application/json";
+        $ct = $this->server('CONTENT_TYPE');
+        if ($ct === null) return false;
+        return stripos($ct, 'application/json') !== false;
     }
 
     /**
@@ -87,7 +89,9 @@ class Request
      */
     public function wantsJson(): bool
     {
-        return $this->server('HTTP_ACCEPT') === "application/json";
+        $accept = $this->server('HTTP_ACCEPT');
+        if ($accept === null) return false;
+        return stripos($accept, 'application/json') !== false;
     }
 
     /**
@@ -133,7 +137,7 @@ class Request
      * parameters as an array.
      *
      * @param string|null $key The key of the POST parameter to retrieve, or null to retrieve all.
-     * @return mixed The value of the specified parameter or an array of all parameters if key is null.
+     * @return mixed The value of the specified parameter or an array of parameters if key is null.
      */
     public function post(?string $key = null): mixed
     {

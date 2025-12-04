@@ -53,7 +53,8 @@ class Connection
                     Configuration::DB_PASS
                 );
                 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+                // Use native prepared statements when available for better security and proper typing.
+                $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
                 self::$instance = new self($db);
             }
             return self::$instance;
