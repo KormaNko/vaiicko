@@ -8,88 +8,130 @@ use Framework\Http\Responses\JsonResponse;
 use Framework\Http\Responses\Response;
 use Framework\DB\Connection;
 
-// Tento kontrolér spravuje CRUD operácie pre entitu "users" cez JSON API.
-// Poskytuje zoznam, detail, vytváranie, aktualizáciu a mazanie používateľov.
+/**
+ * UsersController
+ *
+ * Účel triedy:
+ * - Spravovať CRUD operácie nad tabuľkou `users` cez JSON API.
+ * - Vrátiť konzistentné JSON odpovede (status, data alebo errors/message).
+ * - Zabezpečiť základnú server-side validáciu vstupov.
+ *
+ * Princíp:
+ * - Každá verejná metóda reprezentuje jednu akciu/endpunkt.
+ * - Používame prepared statements pre bezpečné DB volania.
+ * - Heslá sa nikde nevracajú ani neukladjú do identity objektu.
+ */
 class UsersController extends BaseController
 {
-    // index(): pridá CORS hlavičky a spracuje preflight (OPTIONS), potom deleguje na list()
+    /**
+     * index(Request): vstupná metóda pre endpoint users
+     * - Pridáva CORS hlavičky (pre frontend počas vývoja).
+     * - Spracuje OPTIONS preflight (rýchla odpoveď) a následne deleguje na list().
+     *
+     * Dôležité: hlavičky sú umiestnené tu, pretože JSON endpointy sa volajú z iného origin-u počas vývoja.
+     */
     public function index(Request $request): Response
     {
-        // CORS hlavičky povolené pre frontend (localhost:5173)
+        // CORS hlavičky povolené pre frontend (localhost:5173).
+        // Poznámka: v produkcii zváž nastavenie povolených originov a prípadne "Access-Control-Allow-Credentials".
         header('Access-Control-Allow-Origin: http://localhost:5173');
         header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
-        // Preflight odpoveď (prehliadač posiela OPTIONS pred skutočnou požiadavkou)
+        // Ak prehliadač posiela preflight OPTIONS, vrátime jednoduchú odpoveď 200 OK.
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        // Štandardne zobrazíme zoznam používateľov
+        // Štandardne zobraziť zoznam používateľov
         return $this->list($request);
     }
 
-    // list(): načíta všetkých používateľov z DB a vráti ako JSON pole
+    /**
+     * list(Request): načíta zoznam všetkých používateľov
+     * - SELECT vyberá len bezpečné veřejné stĺpce (bez hesla).
+     * - Výsledkom je JSON s kľúčom 'data' obsahujúcim pole záznamov.
+     * - Pri chybe v DB vrátime 500.
+     */
     public function list(Request $request): Response
     {
         try {
             $conn = Connection::getInstance();
-            // Vyberieme len verejné stĺpce (bez hesla)
+            // Vyberáme len verejné stĺpce, heslo nikdy nevraciame
             $sql = "SELECT id, firstName, lastName, email, isStudent, created_at FROM `users` ORDER BY id DESC";
             $stmt = $conn->prepare($sql);
             $stmt->execute([]);
             $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            // Vraciame pole riadkov (môže byť aj prázdne)
             return new JsonResponse(['status' => 'ok', 'data' => $rows]);
         } catch (\Throwable $e) {
-            // Pri neočakávanej chybe vrátime 500
+            // Interná chyba: neodhaľujeme detaily (okrem dev módu, ak je zapnuté SHOW_EXCEPTION_DETAILS inde)
             return (new JsonResponse(['status' => 'error', 'message' => 'Internal Server Error']))->setStatusCode(500);
         }
     }
 
-    // detail(): získa jedného používateľa podľa id (query param `id`) a vráti detail
+    /**
+     * detail(Request): získa detail jedného používateľa podľa query param `id`
+     * - Očakáva ?id=123 v URL (Request::get('id')).
+     * - Ak chýba id, vrátime 400 Bad Request.
+     * - Ak záznam neexistuje, vrátime 404 Not Found.
+     */
     public function detail(Request $request): Response
     {
         $id = $request->get('id');
         if ($id === null || $id === '') {
-            // Chýba id v požiadavke
+            // Chýba povinný parameter id
             return (new JsonResponse(['status' => 'error', 'message' => 'Missing id']))->setStatusCode(400);
         }
         try {
             $conn = Connection::getInstance();
             $sql = "SELECT id, firstName, lastName, email, isStudent, created_at FROM `users` WHERE id = ? LIMIT 1";
             $stmt = $conn->prepare($sql);
+            // Execute s parametrom zabezpečí správne ošetrenie hodnoty
             $stmt->execute([$id]);
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            if (!$row) return (new JsonResponse(['status' => 'error', 'message' => 'Not found']))->setStatusCode(404);
+            if (!$row) {
+                // Ak neexistuje, jasne to povieme s 404
+                return (new JsonResponse(['status' => 'error', 'message' => 'Not found']))->setStatusCode(404);
+            }
+            // Úspech: vrátime detail záznamu
             return new JsonResponse(['status' => 'ok', 'data' => $row]);
         } catch (\Throwable $e) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Internal Server Error']))->setStatusCode(500);
         }
     }
 
-    // create(): očakáva POST s JSON telom, validuje polia a vloží nového používateľa
+    /**
+     * create(Request): vytvorí nového používateľa
+     * - Očakáva POST s JSON telom obsahujúcim polia firstName, lastName, email, password, isStudent (voliteľné).
+     * - Validácia: všetky potrebné polia sú kontrolované server-side.
+     * - Heslo sa hash-uje cez password_hash pred uložením.
+     * - Pri duplicitnom emaile vrátime 400 s chybou pre pole 'email'.
+     */
     public function create(Request $request): Response
     {
         if (!$request->isPost()) {
-            // Vytváranie musí byť POST
+            // Metóda musí byť POST
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
         }
 
         try {
-            // Načítame JSON z tela
+            // Načítame a dekódujeme JSON z tela požiadavky
             $data = $request->json();
         } catch (\JsonException $e) {
-            // Nekorektný JSON
+            // Neplatný JSON -> 400
             return (new JsonResponse(['status' => 'error', 'errors' => ['body' => 'Invalid JSON']]))->setStatusCode(400);
         }
         if (is_object($data)) $data = (array)$data;
+
+        // Bezpečne konvertujeme a trimujeme vstupy
         $firstName = trim((string)($data['firstName'] ?? ''));
         $lastName = trim((string)($data['lastName'] ?? ''));
         $email = trim((string)($data['email'] ?? ''));
         $password = (string)($data['password'] ?? '');
         $isStudent = isset($data['isStudent']) ? (int)$data['isStudent'] : 0;
 
-        // Jednoduchá server-side validácia
+        // Jednoduchá server-side validácia; návrh: rozšíriť podľa požiadaviek (regex, dĺžky, atď.)
         $errors = [];
         if ($firstName === '') $errors['firstName'] = 'First name is required';
         if ($lastName === '') $errors['lastName'] = 'Last name is required';
@@ -98,34 +140,44 @@ class UsersController extends BaseController
         if ($password === '' || mb_strlen($password) < 6) $errors['password'] = 'Password must be at least 6 characters';
 
         if (!empty($errors)) {
-            // Ak sú chyby, vrátime ich a status 400
+            // Vrátime štruktúrované chyby pre frontend
             return (new JsonResponse(['status' => 'error', 'errors' => $errors]))->setStatusCode(400);
         }
 
         try {
             $conn = Connection::getInstance();
+            // Hashujeme heslo pred uložením
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $sql = "INSERT INTO `users` (firstName, lastName, email, password, isStudent) VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$firstName, $lastName, $email, $hash, $isStudent]);
             $id = $conn->lastInsertId();
-            // Vrátime id nového používateľa a status 201
+            // Úspešne vytvorené -> vrátime ID a status 201
             return (new JsonResponse(['status' => 'ok', 'id' => $id]))->setStatusCode(201);
         } catch (\PDOException $e) {
-            // Duplicitný email alebo iné integrity chyby spracujeme tu
-            $code = $e->getCode();
+            // Kontrolujeme SQLSTATE alebo errno pre identifikovanie duplicitného záznamu
             $sqlstate = $e->errorInfo[0] ?? null;
             $errno = $e->errorInfo[1] ?? null;
             if ($sqlstate === '23000' || $errno === 1062) {
+                // Duplicitný email: vrátime user-friendly chybu pre pole 'email'
                 return (new JsonResponse(['status' => 'error', 'errors' => ['email' => 'Email already registered']]))->setStatusCode(400);
             }
+            // Iná databázová chyba -> 500
             return (new JsonResponse(['status' => 'error', 'message' => 'Internal Server Error']))->setStatusCode(500);
         } catch (\Throwable $e) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Internal Server Error']))->setStatusCode(500);
         }
     }
 
-    // update(): očakáva POST + id v query a JSON telo s voliteľnými poľami na aktualizáciu
+    /**
+     * update(Request): aktualizuje existujúceho používateľa
+     * - Očakáva POST a query param `id` (napr. ?id=123) a JSON telo s voliteľnými poľami.
+     * - Dynamicky budujeme SET podľa polí prítomných v JSON.
+     * - Ak nie sú žiadne polia na aktualizáciu, vrátime 200 s "Nothing to update".
+     * - Ak rowCount() === 0 po UPDATE, môže to znamenať A) záznam s id neexistuje alebo B) údaje boli rovnaké
+     *   (žiadna zmena). Momentálne to vracia 404 s textom 'Not found or not modified' — podľa preferencie frontendu
+     *   to môžeš zmeniť, aby sa rozlišovalo medzi 404 a 304/200.
+     */
     public function update(Request $request): Response
     {
         if (!$request->isPost()) {
@@ -148,6 +200,7 @@ class UsersController extends BaseController
         $password = isset($data['password']) ? (string)$data['password'] : null;
         $isStudent = isset($data['isStudent']) ? (int)$data['isStudent'] : null;
 
+        // Server-side validácia len pre poskytnuté polia
         $errors = [];
         if ($firstName !== null && $firstName === '') $errors['firstName'] = 'First name is required';
         if ($lastName !== null && $lastName === '') $errors['lastName'] = 'Last name is required';
@@ -172,7 +225,7 @@ class UsersController extends BaseController
             if ($isStudent !== null) { $sets[] = '`isStudent` = ?'; $params[] = $isStudent; }
 
             if (empty($sets)) {
-                // Ak nie sú žiadne polia na aktualizáciu, nič sa nedeje
+                // Žiadne polia na aktualizáciu -> nič sa nemení
                 return (new JsonResponse(['status' => 'ok', 'message' => 'Nothing to update']))->setStatusCode(200);
             }
 
@@ -199,7 +252,11 @@ class UsersController extends BaseController
         }
     }
 
-    // delete(): očakáva POST + id v query a vymaže záznam používateľa
+    /**
+     * delete(Request): vymaže používateľa podľa id
+     * - Očakáva POST + query param `id`.
+     * - Ak záznam neexistuje, vráti 404.
+     */
     public function delete(Request $request): Response
     {
         if (!$request->isPost()) {
