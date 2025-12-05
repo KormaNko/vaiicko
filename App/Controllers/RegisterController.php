@@ -67,7 +67,7 @@ class RegisterController extends BaseController
             return (new JsonResponse(['status' => 'error', 'errors' => ['body' => 'Prázdne telo požiadavky']]))->setStatusCode(400);
         }
 
-        // Extrahujeme a trimujeme vstupy. Použiť explicitné pretypovanie je bezpečnejšie.
+        // Extrahujeme a trimujeme vstupy. Použiť explicitné pretypovanie je bezpečnejšie..
         $firstName = isset($data['firstName']) ? trim((string)$data['firstName']) : '';
         $lastName  = isset($data['lastName'])  ? trim((string)$data['lastName'])  : '';
         $email     = isset($data['email'])     ? trim((string)$data['email'])     : '';
