@@ -9,25 +9,13 @@ use Framework\DB\Connection;
 
 // Tento kontrolér spracováva registráciu používateľov cez JSON API.
 // Má endpoint pre preflight/CORS a hlavnú metódu, ktorá validuje vstup a vloží užívateľa do DB.
-class RegisterController extends BaseController
+class RegisterController extends AppController
 {
     // index(): prida CORS hlavičky a spracuje preflight, následne deleguje na JSON register handler
     public function index(Request $request): Response
     {
-        // CORS hlavičky - vysvetlenie po riadkoch:
-        // 1) Access-Control-Allow-Origin: povolený pôvod (origin) z ktorého môže JS bežať a volať túto API.
-        //    - Tu je nastavené na development frontend 'http://localhost:5173'.
-        //    - V produkcii by toto malo byť nastavené na tvoj frontend doménu alebo vypnuté pre `*`.
-        header('Access-Control-Allow-Origin: http://localhost:5173');
-
-        // 2) Access-Control-Allow-Methods: ktoré HTTP metódy sú povolené pri CORS požiadavkách.
-        //    - Uvádzame POST, GET a OPTIONS (OPTIONS je vyžadované pre preflight požiadavky).
-        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-
-        // 3) Access-Control-Allow-Headers: zoznam hlavičiek, ktoré klient môže posielať pri actual request.
-        //    - Tu povolíme 'Content-Type' (pre JSON), 'Authorization' (ak budete posielať token) a 'X-Requested-With'.
-        //    - Ak klient posiela ďalšie custom hlavičky, treba ich sem pridať.
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        // Use centralized CORS helper
+        $this->sendCorsIfNeeded($request);
 
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             // Preflight odpoveď: prehliadač čaká jednoducho, či je CORS povolený - nepotrebujeme vykonať žiadnu logiku.

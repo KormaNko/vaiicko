@@ -22,23 +22,6 @@ use Framework\Http\Responses\Response;
  */
 class TaskController extends AppController
 {
-    // Helper to set CORS headers for JSON API endpoints (adjust allowed origins as needed)
-    private function sendCors(Request $request): void
-    {
-        $allowed = [
-            'http://localhost:5173',
-            'http://localhost:3000',
-        ];
-        $origin = $request->server('HTTP_ORIGIN') ?? '';
-        if (in_array($origin, $allowed, true)) {
-            header('Access-Control-Allow-Origin: ' . $origin);
-            header('Vary: Origin');
-        }
-        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-        header('Access-Control-Allow-Credentials: true');
-    }
-
     /**
      * Authorizes actions for the controller.
      *

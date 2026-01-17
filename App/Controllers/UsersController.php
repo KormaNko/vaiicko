@@ -10,22 +10,6 @@ use Framework\DB\Connection;
 
 class UsersController extends AppController
 {
-    // Helper to set CORS headers for JSON API endpoints (adjust allowed origins as needed)
-    private function sendCors(Request $request): void
-    {
-        $allowed = [
-            'http://localhost:5173',
-            'http://localhost:3000',
-        ];
-        $origin = $request->server('HTTP_ORIGIN') ?? '';
-        if (in_array($origin, $allowed, true)) {
-            header('Access-Control-Allow-Origin: ' . $origin);
-            header('Vary: Origin');
-        }
-        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-        header('Access-Control-Allow-Credentials: true');
-    }
 
     /**
      * index(Request): vstupná metóda pre endpoint users
@@ -280,9 +264,9 @@ class UsersController extends AppController
     public function delete(Request $request): Response
     {
         $this->sendCorsIfNeeded($request);
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
+
         if (!$request->isPost()) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
         }

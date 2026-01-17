@@ -8,38 +8,18 @@ use Framework\Http\Request;
 use Framework\Http\Responses\JsonResponse;
 use Framework\Http\Responses\Response;
 
-/**
- * LogoutController
- *
- * Provides a simple JSON endpoint to log out the current user (destroys session).
- * Designed to be called from a SPA (CORS + preflight handled).
- */
-class LogoutController extends BaseController
+class LogoutController extends AppController
 {
     public function index(Request $request): Response
     {
-        // Allowed origins - adjust to your frontend origin(s)
-        $allowedOrigins = [
-            'http://localhost:5173',
-            'http://localhost:3000',
-        ];
-
-        $origin = $request->server('HTTP_ORIGIN') ?? '';
-        if (in_array($origin, $allowedOrigins, true)) {
-            header('Access-Control-Allow-Origin: ' . $origin);
-            header('Vary: Origin');
-        }
-
-        header('Access-Control-Allow-Methods: POST, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-        header('Access-Control-Allow-Credentials: true');
+        // Use centralized CORS helper
+        $this->sendCorsIfNeeded($request);
 
         // Preflight
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        // Only allow POST for logout
         if ($request->server('REQUEST_METHOD') !== 'POST') {
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
         }
@@ -51,7 +31,6 @@ class LogoutController extends BaseController
             // Explicitly expire the session cookie to ensure clients cannot reuse it.
             if (function_exists('session_get_cookie_params')) {
                 $params = session_get_cookie_params();
-                // Ensure we call setcookie with the same params (domain/path/secure/httponly)
                 setcookie(
                     session_name(),
                     '',
@@ -62,7 +41,6 @@ class LogoutController extends BaseController
                     $params['httponly'] ?? false
                 );
             } else {
-                // Fallback: clear session cookie by name
                 setcookie(session_name(), '', time() - 42000, '/');
             }
 
