@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Framework\Core\Model;
-use App\Enums\Category;
 use App\Enums\TaskStatus;
 use InvalidArgumentException;
 
@@ -38,7 +37,7 @@ class Task extends Model
         'priority' => 'priority',
         'user_id' => 'userId',
         'deadline' => 'deadline',
-        'category' => 'category',
+        'category_id' => 'categoryId',
         'created_at' => 'createdAt',
         'updated_at' => 'updatedAt',
     ];
@@ -79,9 +78,9 @@ class Task extends Model
     protected ?string $deadline;
 
     /**
-     * Category of the task (nullable).
+     * Category ID of the task (nullable, FK to categories.id).
      */
-    protected ?string $category;
+    protected ?int $categoryId;
 
     /**
      * Creation timestamp.
@@ -185,17 +184,14 @@ class Task extends Model
         $this->deadline = $deadline;
     }
 
-    public function getCategory(): ?string
+    public function getCategoryId(): ?int
     {
-        return $this->category;
+        return $this->categoryId;
     }
 
-    public function setCategory(?string $category): void
+    public function setCategoryId(?int $categoryId): void
     {
-        if ($category !== null && $category !== '' && !Category::isValid($category)) {
-            throw new InvalidArgumentException('Invalid category value');
-        }
-        $this->category = $category;
+        $this->categoryId = $categoryId;
     }
 
     public function getCreatedAt(): string
@@ -233,7 +229,7 @@ class Task extends Model
             'priority' => $this->priority,
             'userId' => $this->userId,
             'deadline' => $this->deadline,
-            'category' => $this->category,
+            'categoryId' => $this->categoryId,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
         ];

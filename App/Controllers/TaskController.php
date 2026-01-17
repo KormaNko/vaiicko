@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Task;
-use App\Enums\Category;
+use App\Models\Category as CategoryModel;
 use App\Enums\TaskStatus;
 use Exception;
 use InvalidArgumentException;
@@ -76,22 +76,34 @@ class TaskController extends AppController
         $resp = $this->requireAuth($request);
         if ($resp) return $resp;
 
+        // support JSON body or form-encoded
+        $body = null;
+        if ($request->isJson()) {
+            try {
+                $body = $request->json();
+                if (is_object($body)) $body = (array)$body;
+            } catch (\JsonException $e) {
+                return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON']))->setStatusCode(400);
+            }
+        }
+
         $task = new Task();
-        $task->setTitle($request->value('title'));
-        $task->setDescription($request->value('description') ?? null);
+        $title = $body['title'] ?? $request->value('title');
+        $task->setTitle($title);
+        $task->setDescription($body['description'] ?? $request->value('description') ?? null);
 
         // status: validate via enum
+        $statusVal = $body['status'] ?? $request->value('status') ?? null;
         try {
-            $task->setStatus($request->value('status') ?? TaskStatus::PENDING);
+            $task->setStatus($statusVal ?? TaskStatus::PENDING);
         } catch (InvalidArgumentException $e) {
             return $this->json(['error' => 'Invalid status value'], 400);
         }
 
-        $task->setPriority((int)($request->value('priority') ?? 2));
+        $task->setPriority((int)($body['priority'] ?? $request->value('priority') ?? 2));
         $task->setUserId($this->user->getIdentity()->getId());
 
-        // deadline: optional, accept various date strings, normalize to Y-m-d H:i:s
-        $deadlineRaw = $request->value('deadline');
+        $deadlineRaw = $body['deadline'] ?? $request->value('deadline');
         if ($deadlineRaw) {
             $ts = strtotime($deadlineRaw);
             if ($ts === false) {
@@ -102,14 +114,17 @@ class TaskController extends AppController
             $task->setDeadline(null);
         }
 
-        // category: optional, validate via enum
-        $categoryRaw = $request->value('category');
-        if ($categoryRaw !== null) {
-            try {
-                $task->setCategory($categoryRaw);
-            } catch (InvalidArgumentException $e) {
-                return $this->json(['error' => 'Invalid category value'], 400);
+        // category_id handling: accept numeric id or null
+        $catIdRaw = $body['category_id'] ?? $request->value('category_id');
+        if ($catIdRaw === null || $catIdRaw === '') {
+            $task->setCategoryId(null);
+        } else {
+            $catId = (int)$catIdRaw;
+            $category = CategoryModel::getOne($catId);
+            if (!$category || $category->getUserId() !== $this->user->getIdentity()->getId()) {
+                return $this->json(['error' => 'Invalid category'], 400);
             }
+            $task->setCategoryId($catId);
         }
 
         $task->setCreatedAt(date('Y-m-d H:i:s'));
@@ -144,23 +159,33 @@ class TaskController extends AppController
             return $this->json(['error' => 'Task not found or access denied'], 404);
         }
 
-        $task->setTitle($request->value('title') ?? $task->getTitle());
-        $task->setDescription($request->value('description') ?? $task->getDescription());
-
-        // status: validate if provided
-        if ($request->value('status') !== null) {
+        // support JSON body or form-encoded
+        $body = null;
+        if ($request->isJson()) {
             try {
-                $task->setStatus($request->value('status'));
+                $body = $request->json();
+                if (is_object($body)) $body = (array)$body;
+            } catch (\JsonException $e) {
+                return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON']))->setStatusCode(400);
+            }
+        }
+
+        $task->setTitle($body['title'] ?? $request->value('title') ?? $task->getTitle());
+        $task->setDescription($body['description'] ?? $request->value('description') ?? $task->getDescription());
+
+        if (($body['status'] ?? $request->value('status')) !== null) {
+            $statusVal = $body['status'] ?? $request->value('status');
+            try {
+                $task->setStatus($statusVal);
             } catch (InvalidArgumentException $e) {
                 return $this->json(['error' => 'Invalid status value'], 400);
             }
         }
 
-        $task->setPriority((int)($request->value('priority') ?? $task->getPriority()));
+        $task->setPriority((int)($body['priority'] ?? $request->value('priority') ?? $task->getPriority()));
 
-        // deadline: optional update
-        if ($request->value('deadline') !== null) {
-            $deadlineRaw = $request->value('deadline');
+        if (($body['deadline'] ?? $request->value('deadline')) !== null) {
+            $deadlineRaw = $body['deadline'] ?? $request->value('deadline');
             if ($deadlineRaw === '') {
                 $task->setDeadline(null);
             } else {
@@ -172,12 +197,18 @@ class TaskController extends AppController
             }
         }
 
-        // category: optional update
-        if ($request->value('category') !== null) {
-            try {
-                $task->setCategory($request->value('category'));
-            } catch (InvalidArgumentException $e) {
-                return $this->json(['error' => 'Invalid category value'], 400);
+        // category update handling
+        if (array_key_exists('category_id', (array)$body) || $request->hasValue('category_id')) {
+            $catIdRaw = $body['category_id'] ?? $request->value('category_id');
+            if ($catIdRaw === '') {
+                $task->setCategoryId(null);
+            } else {
+                $catId = (int)$catIdRaw;
+                $category = CategoryModel::getOne($catId);
+                if (!$category || $category->getUserId() !== $this->user->getIdentity()->getId()) {
+                    return $this->json(['error' => 'Invalid category'], 400);
+                }
+                $task->setCategoryId($catId);
             }
         }
 
