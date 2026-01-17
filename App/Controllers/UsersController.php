@@ -23,6 +23,23 @@ use Framework\DB\Connection;
  */
 class UsersController extends BaseController
 {
+    // Helper to set CORS headers for JSON API endpoints (adjust allowed origins as needed)
+    private function sendCors(Request $request): void
+    {
+        $allowed = [
+            'http://localhost:5173',
+            'http://localhost:3000',
+        ];
+        $origin = $request->server('HTTP_ORIGIN') ?? '';
+        if (in_array($origin, $allowed, true)) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+            header('Vary: Origin');
+        }
+        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Credentials: true');
+    }
+
     /**
      * index(Request): vstupná metóda pre endpoint users
      * - Pridáva CORS hlavičky (pre frontend počas vývoja).
@@ -32,15 +49,16 @@ class UsersController extends BaseController
      */
     public function index(Request $request): Response
     {
-        // CORS hlavičky povolené pre frontend (localhost:5173).
-        // Poznámka: v produkcii zváž nastavenie povolených originov a prípadne "Access-Control-Allow-Credentials".
-        header('Access-Control-Allow-Origin: http://localhost:5173');
-        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        $this->sendCors($request);
 
         // Ak prehliadač posiela preflight OPTIONS, vrátime jednoduchú odpoveď 200 OK.
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
+        }
+
+        // Require authentication for listing users
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
         }
 
         // Štandardne zobraziť zoznam používateľov
@@ -55,6 +73,12 @@ class UsersController extends BaseController
      */
     public function list(Request $request): Response
     {
+        // Ensure CORS and auth
+        $this->sendCors($request);
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
+
         try {
             $conn = Connection::getInstance();
             // Vyberáme len verejné stĺpce, heslo nikdy nevraciame
@@ -78,6 +102,11 @@ class UsersController extends BaseController
      */
     public function detail(Request $request): Response
     {
+        $this->sendCors($request);
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
+
         $id = $request->get('id');
         if ($id === null || $id === '') {
             // Chýba povinný parameter id
@@ -110,6 +139,12 @@ class UsersController extends BaseController
      */
     public function create(Request $request): Response
     {
+        // registration is public but still needs CORS and OPTIONS handling
+        $this->sendCors($request);
+        if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
+            return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
+        }
+
         if (!$request->isPost()) {
             // Metóda musí byť POST
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
@@ -180,6 +215,10 @@ class UsersController extends BaseController
      */
     public function update(Request $request): Response
     {
+        $this->sendCors($request);
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
         if (!$request->isPost()) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
         }
@@ -259,6 +298,10 @@ class UsersController extends BaseController
      */
     public function delete(Request $request): Response
     {
+        $this->sendCors($request);
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
         if (!$request->isPost()) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
         }

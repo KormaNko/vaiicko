@@ -22,6 +22,23 @@ use Framework\Http\Responses\Response;
  */
 class TaskController extends BaseController
 {
+    // Helper to set CORS headers for JSON API endpoints (adjust allowed origins as needed)
+    private function sendCors(Request $request): void
+    {
+        $allowed = [
+            'http://localhost:5173',
+            'http://localhost:3000',
+        ];
+        $origin = $request->server('HTTP_ORIGIN') ?? '';
+        if (in_array($origin, $allowed, true)) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+            header('Vary: Origin');
+        }
+        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Credentials: true');
+    }
+
     /**
      * Authorizes actions for the controller.
      *
@@ -44,6 +61,15 @@ class TaskController extends BaseController
      */
     public function index(Request $request): Response
     {
+        $this->sendCors($request);
+        if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
+            return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
+        }
+
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
+
         $userId = $this->user->getIdentity()->getId();
         $tasks = Task::getAll('user_id = ?', [$userId], 'created_at DESC');
         return $this->json($tasks);
@@ -58,6 +84,15 @@ class TaskController extends BaseController
      */
     public function create(Request $request): Response
     {
+        $this->sendCors($request);
+        if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
+            return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
+        }
+
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
+
         $task = new Task();
         $task->setTitle($request->value('title'));
         $task->setDescription($request->value('description') ?? null);
@@ -111,6 +146,15 @@ class TaskController extends BaseController
      */
     public function update(Request $request): Response
     {
+        $this->sendCors($request);
+        if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
+            return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
+        }
+
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
+
         $id = $request->value('id');
         $task = Task::getOne($id);
 
@@ -171,6 +215,15 @@ class TaskController extends BaseController
      */
     public function delete(Request $request): Response
     {
+        $this->sendCors($request);
+        if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
+            return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
+        }
+
+        if (!$this->user->isLoggedIn()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
+        }
+
         $id = $request->value('id');
         $task = Task::getOne($id);
 
