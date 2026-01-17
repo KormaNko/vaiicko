@@ -20,7 +20,7 @@ use Framework\Http\Responses\Response;
  *
  * @package App\Controllers
  */
-class TaskController extends BaseController
+class TaskController extends AppController
 {
     // Helper to set CORS headers for JSON API endpoints (adjust allowed origins as needed)
     private function sendCors(Request $request): void
@@ -61,14 +61,15 @@ class TaskController extends BaseController
      */
     public function index(Request $request): Response
     {
-        $this->sendCors($request);
+        // CORS and preflight
+        $this->sendCorsIfNeeded($request);
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        // Require auth (returns Response when not authenticated)
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
 
         $userId = $this->user->getIdentity()->getId();
         $tasks = Task::getAll('user_id = ?', [$userId], 'created_at DESC');
@@ -84,14 +85,13 @@ class TaskController extends BaseController
      */
     public function create(Request $request): Response
     {
-        $this->sendCors($request);
+        $this->sendCorsIfNeeded($request);
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
 
         $task = new Task();
         $task->setTitle($request->value('title'));
@@ -146,14 +146,13 @@ class TaskController extends BaseController
      */
     public function update(Request $request): Response
     {
-        $this->sendCors($request);
+        $this->sendCorsIfNeeded($request);
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
 
         $id = $request->value('id');
         $task = Task::getOne($id);
@@ -215,14 +214,13 @@ class TaskController extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $this->sendCors($request);
+        $this->sendCorsIfNeeded($request);
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
 
         $id = $request->value('id');
         $task = Task::getOne($id);

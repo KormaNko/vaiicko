@@ -14,7 +14,7 @@ use Framework\Http\Responses\Response;
  *
  * @package App\Controllers
  */
-class AdminController extends BaseController
+class AdminController extends AppController
 {
     /**
      * Authorizes actions in this controller.
@@ -39,6 +39,9 @@ class AdminController extends BaseController
      */
     public function index(Request $request): Response
     {
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
+
         return $this->html();
     }
 }

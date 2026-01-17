@@ -8,20 +8,7 @@ use Framework\Http\Responses\JsonResponse;
 use Framework\Http\Responses\Response;
 use Framework\DB\Connection;
 
-/**
- * UsersController
- *
- * Účel triedy:
- * - Spravovať CRUD operácie nad tabuľkou `users` cez JSON API.
- * - Vrátiť konzistentné JSON odpovede (status, data alebo errors/message).
- * - Zabezpečiť základnú server-side validáciu vstupov.
- *
- * Princíp:
- * - Každá verejná metóda reprezentuje jednu akciu/endpunkt.
- * - Používame prepared statements pre bezpečné DB volania.
- * - Heslá sa nikde nevracajú ani neukladjú do identity objektu.
- */
-class UsersController extends BaseController
+class UsersController extends AppController
 {
     // Helper to set CORS headers for JSON API endpoints (adjust allowed origins as needed)
     private function sendCors(Request $request): void
@@ -49,17 +36,15 @@ class UsersController extends BaseController
      */
     public function index(Request $request): Response
     {
-        $this->sendCors($request);
+        $this->sendCorsIfNeeded($request);
 
         // Ak prehliadač posiela preflight OPTIONS, vrátime jednoduchú odpoveď 200 OK.
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        // Require authentication for listing users
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
 
         // Štandardne zobraziť zoznam používateľov
         return $this->list($request);
@@ -73,11 +58,9 @@ class UsersController extends BaseController
      */
     public function list(Request $request): Response
     {
-        // Ensure CORS and auth
-        $this->sendCors($request);
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $this->sendCorsIfNeeded($request);
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
 
         try {
             $conn = Connection::getInstance();
@@ -102,10 +85,9 @@ class UsersController extends BaseController
      */
     public function detail(Request $request): Response
     {
-        $this->sendCors($request);
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $this->sendCorsIfNeeded($request);
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
 
         $id = $request->get('id');
         if ($id === null || $id === '') {
@@ -140,7 +122,7 @@ class UsersController extends BaseController
     public function create(Request $request): Response
     {
         // registration is public but still needs CORS and OPTIONS handling
-        $this->sendCors($request);
+        $this->sendCorsIfNeeded($request);
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
@@ -215,10 +197,9 @@ class UsersController extends BaseController
      */
     public function update(Request $request): Response
     {
-        $this->sendCors($request);
-        if (!$this->user->isLoggedIn()) {
-            return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
-        }
+        $this->sendCorsIfNeeded($request);
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
         if (!$request->isPost()) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
         }
@@ -298,7 +279,7 @@ class UsersController extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $this->sendCors($request);
+        $this->sendCorsIfNeeded($request);
         if (!$this->user->isLoggedIn()) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Unauthorized']))->setStatusCode(401);
         }
