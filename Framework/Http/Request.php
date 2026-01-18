@@ -75,7 +75,8 @@ class Request
      */
     public function isJson(): bool
     {
-        return $this->server('CONTENT_TYPE') === "application/json";
+        $ct = $this->server('CONTENT_TYPE') ?? '';
+        return is_string($ct) && str_starts_with(trim(strtolower($ct)), 'application/json');
     }
 
     /**
@@ -87,7 +88,8 @@ class Request
      */
     public function wantsJson(): bool
     {
-        return $this->server('HTTP_ACCEPT') === "application/json";
+        $accept = $this->server('HTTP_ACCEPT') ?? '';
+        return is_string($accept) && str_contains(strtolower($accept), 'application/json');
     }
 
     /**

@@ -77,11 +77,13 @@ class TaskController extends AppController
         if ($resp) return $resp;
 
         // support JSON body or form-encoded
-        $body = null;
+        // normalize body to an array (safe for non-JSON requests)
+        $body = [];
         if ($request->isJson()) {
             try {
-                $body = $request->json();
-                if (is_object($body)) $body = (array)$body;
+                $tmp = $request->json();
+                if (is_object($tmp)) $tmp = (array)$tmp;
+                if (is_array($tmp)) $body = $tmp;
             } catch (\JsonException $e) {
                 return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON']))->setStatusCode(400);
             }
@@ -114,8 +116,19 @@ class TaskController extends AppController
             $task->setDeadline(null);
         }
 
-        // category_id handling: accept numeric id or null
-        $catIdRaw = $body['category_id'] ?? $request->value('category_id');
+        // category handling: accept category_id, category (id) or raw category id
+        $catIdRaw = null;
+        if (array_key_exists('category_id', $body)) {
+            $catIdRaw = $body['category_id'];
+        } elseif (isset($body['category']) && is_array($body['category']) && array_key_exists('id', $body['category'])) {
+            $catIdRaw = $body['category']['id'];
+        } elseif (isset($body['category']) && (is_int($body['category']) || is_string($body['category'])) && is_numeric($body['category'])) {
+            $catIdRaw = $body['category'];
+        } else {
+            // fallback to form value (may be null)
+            $catIdRaw = $request->value('category_id') ?? $request->value('category');
+        }
+
         if ($catIdRaw === null || $catIdRaw === '') {
             $task->setCategoryId(null);
         } else {
@@ -160,11 +173,13 @@ class TaskController extends AppController
         }
 
         // support JSON body or form-encoded
-        $body = null;
+        // normalize body to an array (safe for non-JSON requests)
+        $body = [];
         if ($request->isJson()) {
             try {
-                $body = $request->json();
-                if (is_object($body)) $body = (array)$body;
+                $tmp = $request->json();
+                if (is_object($tmp)) $tmp = (array)$tmp;
+                if (is_array($tmp)) $body = $tmp;
             } catch (\JsonException $e) {
                 return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON']))->setStatusCode(400);
             }
@@ -197,9 +212,24 @@ class TaskController extends AppController
             }
         }
 
-        // category update handling
-        if (array_key_exists('category_id', (array)$body) || $request->hasValue('category_id')) {
-            $catIdRaw = $body['category_id'] ?? $request->value('category_id');
+        // detect category presence: accept category_id or nested category object (or raw id)
+        $bodyArr = (array)$body;
+        $categoryProvided = array_key_exists('category_id', $bodyArr)
+            || array_key_exists('category', $bodyArr)
+            || $request->hasValue('category_id')
+            || $request->hasValue('category');
+
+        if ($categoryProvided) {
+            if (array_key_exists('category_id', $bodyArr)) {
+                $catIdRaw = $bodyArr['category_id'];
+            } elseif (array_key_exists('category', $bodyArr) && is_array($bodyArr['category']) && array_key_exists('id', $bodyArr['category'])) {
+                $catIdRaw = $bodyArr['category']['id'];
+            } elseif (array_key_exists('category', $bodyArr) && is_numeric($bodyArr['category'])) {
+                $catIdRaw = $bodyArr['category'];
+            } else {
+                $catIdRaw = $request->value('category_id') ?? $request->value('category');
+            }
+
             if ($catIdRaw === '') {
                 $task->setCategoryId(null);
             } else {

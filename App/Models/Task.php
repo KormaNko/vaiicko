@@ -5,6 +5,7 @@ namespace App\Models;
 use Framework\Core\Model;
 use App\Enums\TaskStatus;
 use InvalidArgumentException;
+use App\Models\Category as CategoryModel;
 
 /**
  * Class Task
@@ -221,7 +222,7 @@ class Task extends Model
      */
     public function jsonSerialize(): array
     {
-        return [
+        $out = [
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
@@ -230,8 +231,25 @@ class Task extends Model
             'userId' => $this->userId,
             'deadline' => $this->deadline,
             'categoryId' => $this->categoryId,
+            // backward compatible snake_case key clients might expect
+            'category_id' => $this->categoryId,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
         ];
+
+        // attempt to include nested category object for frontends that expect it
+        if ($this->categoryId !== null) {
+            try {
+                $cat = CategoryModel::getOne($this->categoryId);
+                $out['category'] = $cat ? $cat->jsonSerialize() : null;
+            } catch (\Exception $e) {
+                // ignore - don't break serialization
+                $out['category'] = null;
+            }
+        } else {
+            $out['category'] = null;
+        }
+
+        return $out;
     }
 }
