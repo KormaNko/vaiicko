@@ -33,24 +33,14 @@ class Option extends Model
     protected string $createdAt;
     protected string $updatedAt;
 
-    /**
-     * Fetch options for given user id. Returns null if not found.
-     * @param int $userId
-     * @return static|null
-     * @throws \Exception
-     */
+
     public static function getByUserId(int $userId): ?static
     {
         $items = static::getAll('user_id = ?', [$userId], null, 1);
         return $items[0] ?? null;
     }
 
-    /**
-     * Create default options for user and persist to DB.
-     * @param int $userId
-     * @return static
-     * @throws \Exception
-     */
+
     public static function createDefaultForUser(int $userId): static
     {
         $opt = new static();
@@ -65,7 +55,7 @@ class Option extends Model
         return $opt;
     }
 
-    // Getters and setters
+    // getteri a setteri
     public function getId(): int
     {
         return $this->id;

@@ -105,7 +105,7 @@ class UsersController extends AppController
      */
     public function create(Request $request): Response
     {
-        // registration is public but still needs CORS and OPTIONS handling
+
         $this->sendCorsIfNeeded($request);
         if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
@@ -155,9 +155,13 @@ class UsersController extends AppController
             $id = $conn->lastInsertId();
             // Úspešne vytvorené -> vrátime ID a status 201
             return (new JsonResponse(['status' => 'ok', 'id' => $id]))->setStatusCode(201);
-        } catch (\PDOException $e) {
+        }
+        //cisto ai kod tieto vynimky
+        catch (\PDOException $e) {
             // Kontrolujeme SQLSTATE alebo errno pre identifikovanie duplicitného záznamu
+            //pole s detajlami db chyby
             $sqlstate = $e->errorInfo[0] ?? null;
+            //konkretny error kod
             $errno = $e->errorInfo[1] ?? null;
             if ($sqlstate === '23000' || $errno === 1062) {
                 // Duplicitný email: vrátime user-friendly chybu pre pole 'email'
@@ -176,8 +180,7 @@ class UsersController extends AppController
      * - Dynamicky budujeme SET podľa polí prítomných v JSON.
      * - Ak nie sú žiadne polia na aktualizáciu, vrátime 200 s "Nothing to update".
      * - Ak rowCount() === 0 po UPDATE, môže to znamenať A) záznam s id neexistuje alebo B) údaje boli rovnaké
-     *   (žiadna zmena). Momentálne to vracia 404 s textom 'Not found or not modified' — podľa preferencie frontendu
-     *   to môžeš zmeniť, aby sa rozlišovalo medzi 404 a 304/200.
+     *   (žiadna zmena). Momentálne to vracia 404 s textom 'Not found or not modified'
      */
     public function update(Request $request): Response
     {
@@ -205,6 +208,7 @@ class UsersController extends AppController
         $isStudent = isset($data['isStudent']) ? (int)$data['isStudent'] : null;
 
         // Server-side validácia len pre poskytnuté polia
+        // tu som to tiez solidne generoval cez ai
         $errors = [];
         if ($firstName !== null && $firstName === '') $errors['firstName'] = 'First name is required';
         if ($lastName !== null && $lastName === '') $errors['lastName'] = 'Last name is required';
@@ -234,6 +238,7 @@ class UsersController extends AppController
             }
 
             $params[] = $id; // where param
+            //ten implode mi iba prida ciarky
             $sql = "UPDATE `users` SET " . implode(', ', $sets) . " WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute($params);

@@ -237,13 +237,12 @@ class Task extends Model
             'updatedAt' => $this->updatedAt,
         ];
 
-        // attempt to include nested category object for frontends that expect it
+
         if ($this->categoryId !== null) {
             try {
                 $cat = CategoryModel::getOne($this->categoryId);
                 $out['category'] = $cat ? $cat->jsonSerialize() : null;
             } catch (\Exception $e) {
-                // ignore - don't break serialization
                 $out['category'] = null;
             }
         } else {
