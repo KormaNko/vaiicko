@@ -21,11 +21,11 @@ class OptionsController extends AppController
         if ($resp) return $resp;
 
         $userId = $this->user->getIdentity()->getId();
-
+        //Načítaj používateľove nastavenia; ak ešte neexistujú, vytvor ich; potom ich pošli späť ako JSON.
         try {
             $opts = Option::getByUserId($userId);
             if ($opts === null) {
-                // create default options if not present
+                // vytvorim nejake default nastavenia pre daneho uzivatela
                 $opts = Option::createDefaultForUser($userId);
             }
             return $this->json($opts);
@@ -46,11 +46,12 @@ class OptionsController extends AppController
 
         $userId = $this->user->getIdentity()->getId();
 
-        // normalize body
+
         $body = [];
         if ($request->isJson()) {
             try {
                 $tmp = $request->json();
+                //vzdy chcem pracovat ako s polom tu mi tiez pomahal chat
                 if (is_object($tmp)) $tmp = (array)$tmp;
                 if (is_array($tmp)) $body = $tmp;
             } catch (\JsonException $e) {
@@ -64,7 +65,7 @@ class OptionsController extends AppController
                 $opts = Option::createDefaultForUser($userId);
             }
 
-            // apply allowed fields
+            //tieto mi cisto generoval chat uz sa mi nechcelo pisat samemu
             if (array_key_exists('language', $body) || $request->hasValue('language')) {
                 $val = $body['language'] ?? $request->value('language');
                 if ($val === '') $val = null;

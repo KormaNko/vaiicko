@@ -25,11 +25,12 @@ class LogoutController extends AppController
         }
 
         try {
-            // Perform logout via configured authenticator (this will destroy session on server side)
+            //vymaže identity zo session teda server zbudni kto som
             $this->app->getAuthenticator()->logout();
 
-            // Explicitly expire the session cookie to ensure clients cannot reuse it.
+            //iba kontrola kvoli starsej vezii php
             if (function_exists('session_get_cookie_params')) {
+                //ziskam cookies a vymazem ich
                 $params = session_get_cookie_params();
                 setcookie(
                     session_name(),
@@ -44,12 +45,16 @@ class LogoutController extends AppController
                 setcookie(session_name(), '', time() - 42000, '/');
             }
 
-            return (new JsonResponse(['status' => 'ok', 'message' => 'Logged out']))->setStatusCode(200);
+            return (new JsonResponse([
+                'status' => 'ok',
+                'message' => 'Logged out'
+            ]))->setStatusCode(200);
+
         } catch (\Throwable $e) {
-            if (defined('App\\Configuration::SHOW_EXCEPTION_DETAILS') && Configuration::SHOW_EXCEPTION_DETAILS) {
-                return (new JsonResponse(['status' => 'error', 'message' => $e->getMessage()]))->setStatusCode(500);
-            }
-            return (new JsonResponse(['status' => 'error', 'message' => 'Internal Server Error']))->setStatusCode(500);
+            return (new JsonResponse([
+                'status' => 'error',
+                'message' => 'Internal Server Error'
+            ]))->setStatusCode(500);
         }
     }
 }

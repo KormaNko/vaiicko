@@ -62,7 +62,7 @@ class RegisterController extends AppController
         $password  = isset($data['password'])  ? (string)$data['password']        : '';
         $isStudent = isset($data['isStudent']) ? (int)$data['isStudent']          : 0;
 
-        // Server-side validácia vstupov - vždy kontrolovať aj na serveri (frontend môže klamať)
+        // Server-side validácia vstupov
         $errors = [];
         if ($firstName === '') $errors['firstName'] = 'First name is required';
         if ($lastName === '')  $errors['lastName']  = 'Last name is required';
@@ -80,7 +80,7 @@ class RegisterController extends AppController
             $conn = Connection::getInstance();
 
             // Bezpečné uloženie hesla: nikdy neukladať heslo v plain-text
-            // Používame password_hash s DEFAULT algoritmom (aktuálne BCrypt / Argon, podľa PHP verzie)
+            // Používame password_hash s DEFAULT algoritmom
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
             // Používame prepared statement so zástupnými parametrami (?) - zabraňuje SQL injection
@@ -97,16 +97,9 @@ class RegisterController extends AppController
                 // Odovzdáme čitateľnú chybu pre pole 'email'
                 return (new JsonResponse(['status' => 'error', 'errors' => ['email' => 'Email already registered']]))->setStatusCode(400);
             }
-            // V dev režime môžeme vrátiť detailnú chybu, inak len generickú 500
-            if (defined('App\\Configuration::SHOW_EXCEPTION_DETAILS') && \App\Configuration::SHOW_EXCEPTION_DETAILS) {
-                return (new JsonResponse(['status' => 'error', 'message' => $e->getMessage()]))->setStatusCode(500);
-            }
             return (new JsonResponse(['status' => 'error', 'message' => 'Internal Server Error']))->setStatusCode(500);
         } catch (\Throwable $e) {
             // Záchyt iných neočakávaných výnimiek
-            if (defined('App\\Configuration::SHOW_EXCEPTION_DETAILS') && \App\Configuration::SHOW_EXCEPTION_DETAILS) {
-                return (new JsonResponse(['status' => 'error', 'message' => $e->getMessage()]))->setStatusCode(500);
-            }
             return (new JsonResponse(['status' => 'error', 'message' => 'Internal Server Error']))->setStatusCode(500);
         }
     }

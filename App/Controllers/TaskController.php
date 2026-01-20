@@ -94,7 +94,7 @@ class TaskController extends AppController
         $task->setTitle($title);
         $task->setDescription($body['description'] ?? $request->value('description') ?? null);
 
-        // status: validate via enum
+        //tu sa kontroluje podla enumu cize to musi sediet
         $statusVal = $body['status'] ?? $request->value('status') ?? null;
         try {
             $task->setStatus($statusVal ?? TaskStatus::PENDING);
@@ -104,7 +104,7 @@ class TaskController extends AppController
 
         $task->setPriority((int)($body['priority'] ?? $request->value('priority') ?? 2));
         $task->setUserId($this->user->getIdentity()->getId());
-
+        //ak neda deadline nevadi ale nezobrazi sa mu v kalendaria ale to uz na frontende
         $deadlineRaw = $body['deadline'] ?? $request->value('deadline');
         if ($deadlineRaw) {
             $ts = strtotime($deadlineRaw);
@@ -116,16 +116,18 @@ class TaskController extends AppController
             $task->setDeadline(null);
         }
 
-        // category handling: accept category_id, category (id) or raw category id
+        // category spracovanie toto tiez robil uz zase chat lebo to zacianlo byt repetitvne accept category_id, category (id) or raw category id
         $catIdRaw = null;
+        //category_id v JSON
         if (array_key_exists('category_id', $body)) {
             $catIdRaw = $body['category_id'];
+            //category ako objekt
         } elseif (isset($body['category']) && is_array($body['category']) && array_key_exists('id', $body['category'])) {
             $catIdRaw = $body['category']['id'];
+            //category ako číslo/string
         } elseif (isset($body['category']) && (is_int($body['category']) || is_string($body['category'])) && is_numeric($body['category'])) {
             $catIdRaw = $body['category'];
         } else {
-            // fallback to form value (may be null)
             $catIdRaw = $request->value('category_id') ?? $request->value('category');
         }
 
@@ -134,6 +136,7 @@ class TaskController extends AppController
         } else {
             $catId = (int)$catIdRaw;
             $category = CategoryModel::getOne($catId);
+            //tu mam kontrolu ci ta kategoria mu naozaj patri teda tomu konkretnemu userovi kazdy ma vlastne
             if (!$category || $category->getUserId() !== $this->user->getIdentity()->getId()) {
                 return $this->json(['error' => 'Invalid category'], 400);
             }
@@ -148,13 +151,7 @@ class TaskController extends AppController
         return $this->json($task);
     }
 
-    /**
-     * Updates an existing task.
-     *
-     * @param Request $request The incoming request containing updated task data.
-     * @return JsonResponse The JSON response containing the updated task.
-     * @throws Exception If task update fails or task not found.
-     */
+  //klasika update kategorii
     public function update(Request $request): Response
     {
         $this->sendCorsIfNeeded($request);
@@ -172,8 +169,7 @@ class TaskController extends AppController
             return $this->json(['error' => 'Task not found or access denied'], 404);
         }
 
-        // support JSON body or form-encoded
-        // normalize body to an array (safe for non-JSON requests)
+
         $body = [];
         if ($request->isJson()) {
             try {
@@ -188,9 +184,11 @@ class TaskController extends AppController
         $task->setTitle($body['title'] ?? $request->value('title') ?? $task->getTitle());
         $task->setDescription($body['description'] ?? $request->value('description') ?? $task->getDescription());
 
+        //ak idem menit statis
         if (($body['status'] ?? $request->value('status')) !== null) {
             $statusVal = $body['status'] ?? $request->value('status');
             try {
+                //musi byt v spravon formate
                 $task->setStatus($statusVal);
             } catch (InvalidArgumentException $e) {
                 return $this->json(['error' => 'Invalid status value'], 400);
@@ -199,11 +197,14 @@ class TaskController extends AppController
 
         $task->setPriority((int)($body['priority'] ?? $request->value('priority') ?? $task->getPriority()));
 
+        //menim len ked pride
         if (($body['deadline'] ?? $request->value('deadline')) !== null) {
             $deadlineRaw = $body['deadline'] ?? $request->value('deadline');
+            //prazdny rusim deadline
             if ($deadlineRaw === '') {
                 $task->setDeadline(null);
             } else {
+                //ak existuje parsujem ho tam
                 $ts = strtotime($deadlineRaw);
                 if ($ts === false) {
                     return $this->json(['error' => 'Invalid deadline format'], 400);
@@ -212,7 +213,8 @@ class TaskController extends AppController
             }
         }
 
-        // detect category presence: accept category_id or nested category object (or raw id)
+        // tu zase makal chat vlastne overuje vsetky mozne druhy poslani toho jsona je to trocha zbytocne mozno ale zase je to viac univerzalne nechal so mto tu uz
+        // ak  by ju nenasiel iba sa to preskoci
         $bodyArr = (array)$body;
         $categoryProvided = array_key_exists('category_id', $bodyArr)
             || array_key_exists('category', $bodyArr)
@@ -233,6 +235,7 @@ class TaskController extends AppController
             if ($catIdRaw === '') {
                 $task->setCategoryId(null);
             } else {
+                //nacitam kategoriu z DB ak neexistuje tak vratim chybu
                 $catId = (int)$catIdRaw;
                 $category = CategoryModel::getOne($catId);
                 if (!$category || $category->getUserId() !== $this->user->getIdentity()->getId()) {
@@ -249,13 +252,6 @@ class TaskController extends AppController
         return $this->json($task);
     }
 
-    /**
-     * Deletes a task.
-     *
-     * @param Request $request The incoming request containing the task ID.
-     * @return JsonResponse The JSON response confirming deletion.
-     * @throws Exception If task deletion fails or task not found.
-     */
     public function delete(Request $request): Response
     {
         $this->sendCorsIfNeeded($request);
