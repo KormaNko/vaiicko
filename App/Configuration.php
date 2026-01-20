@@ -60,7 +60,7 @@ class Configuration
      * Flag to enable or disable detailed exception stack traces. This feature is intended for development purposes
      * only.
      */
-    public const SHOW_EXCEPTION_DETAILS = true;
+    public const SHOW_EXCEPTION_DETAILS = false;
 
     /**
      * Class name for the authenticator. This class must implement the IAuthenticator interface. Comment out this line

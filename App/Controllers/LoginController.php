@@ -100,7 +100,21 @@ class LoginController extends AppController
             $identity = new DbIdentity((int)$user['id'], $user['firstName'] ?? '', $user['lastName'] ?? '', $user['email'] ?? '');
             $session->set(Configuration::IDENTITY_SESSION_KEY, $identity);
 
-            return (new JsonResponse(['status' => 'ok', 'message' => 'Prihlásenie úspešné', 'name' => $identity->getName()] ))->setStatusCode(200);
+            // Generate and store CSRF token in session (safe-fail: ignore if random_bytes fails)
+            $csrf = null;
+            try {
+                $csrf = bin2hex(random_bytes(32));
+                $session->set('csrf_token', $csrf);
+            } catch (\Throwable $e) {
+                // ignore token generation errors
+            }
+
+            // Prepare response payload and include CSRF token in DEV mode for verification
+            $payload = ['status' => 'ok', 'message' => 'Prihlásenie úspešné', 'name' => $identity->getName()];
+            if (defined('\App\\Configuration::SHOW_EXCEPTION_DETAILS') && \App\Configuration::SHOW_EXCEPTION_DETAILS && $csrf !== null) {
+                $payload['csrf'] = $csrf;
+            }
+            return (new JsonResponse($payload))->setStatusCode(200);
         } catch (\Throwable $e) {
             if (defined('App\\Configuration::SHOW_EXCEPTION_DETAILS') && \App\Configuration::SHOW_EXCEPTION_DETAILS) {
                 return (new JsonResponse(['status' => 'error', 'message' => $e->getMessage()]))->setStatusCode(500);
