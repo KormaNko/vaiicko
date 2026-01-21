@@ -50,7 +50,7 @@ class TaskController extends AppController
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        // Require auth (returns Response when not authenticated)
+       //musi byt admin
         $resp = $this->requireAuth($request);
         if ($resp) return $resp;
 
@@ -76,8 +76,8 @@ class TaskController extends AppController
         $resp = $this->requireAuth($request);
         if ($resp) return $resp;
 
-        // support JSON body or form-encoded
-        // normalize body to an array (safe for non-JSON requests)
+        // support JSON
+        // normalizujem na pole
         $body = [];
         if ($request->isJson()) {
             try {
@@ -88,15 +88,13 @@ class TaskController extends AppController
                 return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON']))->setStatusCode(400);
             }
         }
-
-        // Reject any use of `category` (object or string). API accepts only `category_id` (int|null).
+        //prijmam categori_id ale nie category objekt/string
         if (array_key_exists('category', $body) || $request->hasValue('category')) {
             return $this->json(['error' => "Invalid parameter 'category'. Send 'category_id' (int|null) only."], 400);
         }
 
         $task = new Task();
         $title = $body['title'] ?? $request->value('title');
-        // Title is required and must be a non-empty string. Coerce and validate to avoid exceptions
         if ($title === null || trim((string)$title) === '') {
             return $this->json(['error' => 'Title is required'], 400);
         }
@@ -125,7 +123,7 @@ class TaskController extends AppController
             $task->setDeadline(null);
         }
 
-        // Only accept category_id (int|null). It may come in JSON body or as form value named 'category_id'.
+       //moze prist ako jsno alebo formular
         $catIdRaw = null;
         if (array_key_exists('category_id', $body)) {
             $catIdRaw = $body['category_id'];
@@ -134,7 +132,6 @@ class TaskController extends AppController
         }
 
         if ($catIdRaw === null || $catIdRaw === '') {
-            // explicit null or omitted => no category
             $task->setCategoryId(null);
         } else {
             if (!is_numeric($catIdRaw)) {
@@ -154,7 +151,6 @@ class TaskController extends AppController
         try {
             $task->save();
         } catch (\Exception $e) {
-            // Return a JSON error instead of an uncaught exception page. Include message for debugging.
             return $this->json(['error' => 'Failed to save task', 'message' => $e->getMessage()], 500);
         }
 
@@ -225,7 +221,6 @@ class TaskController extends AppController
             }
         }
 
-        // Reject any `category` param (object/string). Accept only `category_id` when provided.
         if (array_key_exists('category', $bodyArr) || $request->hasValue('category')) {
             return $this->json(['error' => "Invalid parameter 'category'. Send 'category_id' (int|null) only."], 400);
         }

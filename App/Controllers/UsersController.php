@@ -24,7 +24,6 @@ class UsersController extends AppController
 
         $currentId = $this->user->getIdentity()->getId();
         if ($currentId !== self::ADMIN_USER_ID) {
-            // For XHR/JSON requests return 403 JSON, for others also return 403 JSON (simplest approach)
             return (new JsonResponse(['status' => 'error', 'message' => 'Forbidden']))->setStatusCode(403);
         }
         return null;
