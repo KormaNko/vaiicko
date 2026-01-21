@@ -89,6 +89,11 @@ class TaskController extends AppController
             }
         }
 
+        // Reject any use of `category` (object or string). API accepts only `category_id` (int|null).
+        if (array_key_exists('category', $body) || $request->hasValue('category')) {
+            return $this->json(['error' => "Invalid parameter 'category'. Send 'category_id' (int|null) only."], 400);
+        }
+
         $task = new Task();
         $title = $body['title'] ?? $request->value('title');
         // Title is required and must be a non-empty string. Coerce and validate to avoid exceptions
@@ -120,27 +125,23 @@ class TaskController extends AppController
             $task->setDeadline(null);
         }
 
-        // category spracovanie toto tiez robil uz zase chat lebo to zacianlo byt repetitvne accept category_id, category (id) or raw category id
+        // Only accept category_id (int|null). It may come in JSON body or as form value named 'category_id'.
         $catIdRaw = null;
-        //category_id v JSON
         if (array_key_exists('category_id', $body)) {
             $catIdRaw = $body['category_id'];
-            //category ako objekt
-        } elseif (isset($body['category']) && is_array($body['category']) && array_key_exists('id', $body['category'])) {
-            $catIdRaw = $body['category']['id'];
-            //category ako číslo/string
-        } elseif (isset($body['category']) && (is_int($body['category']) || is_string($body['category'])) && is_numeric($body['category'])) {
-            $catIdRaw = $body['category'];
-        } else {
-            $catIdRaw = $request->value('category_id') ?? $request->value('category');
+        } elseif ($request->hasValue('category_id')) {
+            $catIdRaw = $request->value('category_id');
         }
 
         if ($catIdRaw === null || $catIdRaw === '') {
+            // explicit null or omitted => no category
             $task->setCategoryId(null);
         } else {
+            if (!is_numeric($catIdRaw)) {
+                return $this->json(['error' => 'Invalid category_id, must be integer or null'], 400);
+            }
             $catId = (int)$catIdRaw;
             $category = CategoryModel::getOne($catId);
-            //tu mam kontrolu ci ta kategoria mu naozaj patri teda tomu konkretnemu userovi kazdy ma vlastne
             if (!$category || $category->getUserId() !== $this->user->getIdentity()->getId()) {
                 return $this->json(['error' => 'Invalid category'], 400);
             }
@@ -190,8 +191,10 @@ class TaskController extends AppController
             }
         }
 
-        $task->setTitle($body['title'] ?? $request->value('title') ?? $task->getTitle());
-        $task->setDescription($body['description'] ?? $request->value('description') ?? $task->getDescription());
+        $bodyArr = (array)$body;
+
+         $task->setTitle($body['title'] ?? $request->value('title') ?? $task->getTitle());
+         $task->setDescription($body['description'] ?? $request->value('description') ?? $task->getDescription());
 
         //ak idem menit statis
         if (($body['status'] ?? $request->value('status')) !== null) {
@@ -222,29 +225,26 @@ class TaskController extends AppController
             }
         }
 
-        // tu zase makal chat vlastne overuje vsetky mozne druhy poslani toho jsona je to trocha zbytocne mozno ale zase je to viac univerzalne nechal so mto tu uz
-        // ak  by ju nenasiel iba sa to preskoci
-        $bodyArr = (array)$body;
-        $categoryProvided = array_key_exists('category_id', $bodyArr)
-            || array_key_exists('category', $bodyArr)
-            || $request->hasValue('category_id')
-            || $request->hasValue('category');
+        // Reject any `category` param (object/string). Accept only `category_id` when provided.
+        if (array_key_exists('category', $bodyArr) || $request->hasValue('category')) {
+            return $this->json(['error' => "Invalid parameter 'category'. Send 'category_id' (int|null) only."], 400);
+        }
 
-        if ($categoryProvided) {
-            if (array_key_exists('category_id', $bodyArr)) {
-                $catIdRaw = $bodyArr['category_id'];
-            } elseif (array_key_exists('category', $bodyArr) && is_array($bodyArr['category']) && array_key_exists('id', $bodyArr['category'])) {
-                $catIdRaw = $bodyArr['category']['id'];
-            } elseif (array_key_exists('category', $bodyArr) && is_numeric($bodyArr['category'])) {
-                $catIdRaw = $bodyArr['category'];
-            } else {
-                $catIdRaw = $request->value('category_id') ?? $request->value('category');
-            }
+        $catIdRaw = null;
+        if (array_key_exists('category_id', $bodyArr)) {
+            $catIdRaw = $bodyArr['category_id'];
+        } elseif ($request->hasValue('category_id')) {
+            $catIdRaw = $request->value('category_id');
+        }
 
-            if ($catIdRaw === '') {
+        // Only change category when category_id was explicitly provided in request
+        if (array_key_exists('category_id', $bodyArr) || $request->hasValue('category_id')) {
+            if ($catIdRaw === '' || $catIdRaw === null) {
                 $task->setCategoryId(null);
             } else {
-                //nacitam kategoriu z DB ak neexistuje tak vratim chybu
+                if (!is_numeric($catIdRaw)) {
+                    return $this->json(['error' => 'Invalid category_id, must be integer or null'], 400);
+                }
                 $catId = (int)$catIdRaw;
                 $category = CategoryModel::getOne($catId);
                 if (!$category || $category->getUserId() !== $this->user->getIdentity()->getId()) {

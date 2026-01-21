@@ -222,31 +222,36 @@ class Task extends Model
      */
     public function jsonSerialize(): array
     {
+        // Build a strict, stable representation of a Task according to the API contract.
         $out = [
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
             'status' => $this->status,
             'priority' => $this->priority,
-            'userId' => $this->userId,
             'deadline' => $this->deadline,
-            'categoryId' => $this->categoryId,
-            // backward compatible snake_case key clients might expect
-            'category_id' => $this->categoryId,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
+            // category must always be present as an object or null (only id, name, color)
+            'category' => null,
         ];
-
 
         if ($this->categoryId !== null) {
             try {
                 $cat = CategoryModel::getOne($this->categoryId);
-                $out['category'] = $cat ? $cat->jsonSerialize() : null;
+                if ($cat) {
+                    $out['category'] = [
+                        'id' => $cat->getId(),
+                        'name' => $cat->getName(),
+                        'color' => $cat->getColor(),
+                    ];
+                } else {
+                    // If category record is missing, represent as null (no fallbacks)
+                    $out['category'] = null;
+                }
             } catch (\Exception $e) {
                 $out['category'] = null;
             }
-        } else {
-            $out['category'] = null;
         }
 
         return $out;
