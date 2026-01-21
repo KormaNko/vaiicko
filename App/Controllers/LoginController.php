@@ -31,6 +31,30 @@ class LoginController extends AppController
         return $this->index($request);
     }
 
+    /**
+     * Returns information about the current authenticated user.
+     * GET /login/me (or route to LoginController::me)
+     */
+    public function me(Request $request): Response
+    {
+        $this->sendCorsIfNeeded($request);
+        if ($request->server('REQUEST_METHOD') === 'OPTIONS') {
+            return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
+        }
+
+        // Use the AppUser injected into the controller
+        if (!$this->user->isLoggedIn()) {
+            return new JsonResponse(['authenticated' => false]);
+        }
+
+        $identity = $this->user->getIdentity();
+        return new JsonResponse([
+            'authenticated' => true,
+            'id' => $identity->getId(),
+            'name' => $identity->getName(),
+        ]);
+    }
+
     // spracovanie prihlasovania
     private function handleLoginJson(Request $request): JsonResponse
     {
@@ -123,10 +147,11 @@ class LoginController extends AppController
                //login sa podari ale CSRF ochrana len nebude aktívna
             }
 
-            //uspesne prihlasenie
+            //uspesne prihlasenie - vrátime aj id aby frontend mohol okamžite nastaviť currentUser
             $payload = [
                 'status' => 'ok',
                 'message' => 'Prihlásenie úspešné',
+                'id' => $identity->getId(),
                 'name' => $identity->getName()
             ];
 

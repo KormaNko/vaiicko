@@ -10,7 +10,26 @@ use Framework\DB\Connection;
 
 class UsersController extends AppController
 {
-//v tejto trieda som generoval urcite najviac kodu cez ai
+    // Simple constant for the admin user id allowed to access this controller
+    private const ADMIN_USER_ID = 16;
+
+    /**
+     * Require that the current user is authenticated and is the admin with id = ADMIN_USER_ID.
+     * Returns a Response (403/401/redirect) when not allowed, or null when allowed.
+     */
+    protected function requireAdmin(Request $request): ?Response
+    {
+        $resp = $this->requireAuth($request);
+        if ($resp) return $resp;
+
+        $currentId = $this->user->getIdentity()->getId();
+        if ($currentId !== self::ADMIN_USER_ID) {
+            // For XHR/JSON requests return 403 JSON, for others also return 403 JSON (simplest approach)
+            return (new JsonResponse(['status' => 'error', 'message' => 'Forbidden']))->setStatusCode(403);
+        }
+        return null;
+    }
+
     /**
      * index(Request): vstupná metóda pre endpoint users
      * - Pridáva CORS hlavičky (pre frontend počas vývoja).
@@ -27,9 +46,6 @@ class UsersController extends AppController
             return (new JsonResponse(['status' => 'ok']))->setStatusCode(200);
         }
 
-        $resp = $this->requireAuth($request);
-        if ($resp) return $resp;
-
         // Štandardne zobraziť zoznam používateľov
         return $this->list($request);
     }
@@ -43,8 +59,7 @@ class UsersController extends AppController
     public function list(Request $request): Response
     {
         $this->sendCorsIfNeeded($request);
-        $resp = $this->requireAuth($request);
-        if ($resp) return $resp;
+        // public read endpoint — no admin check
 
         try {
             $conn = Connection::getInstance();
@@ -70,8 +85,7 @@ class UsersController extends AppController
     public function detail(Request $request): Response
     {
         $this->sendCorsIfNeeded($request);
-        $resp = $this->requireAuth($request);
-        if ($resp) return $resp;
+        // public read endpoint — no admin check
 
         $id = $request->get('id');
         if ($id === null || $id === '') {
@@ -115,6 +129,9 @@ class UsersController extends AppController
             // Metóda musí byť POST
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
         }
+
+        $resp = $this->requireAdmin($request);
+        if ($resp) return $resp;
 
         try {
             // Načítame a dekódujeme JSON z tela požiadavky
@@ -185,7 +202,7 @@ class UsersController extends AppController
     public function update(Request $request): Response
     {
         $this->sendCorsIfNeeded($request);
-        $resp = $this->requireAuth($request);
+        $resp = $this->requireAdmin($request);
         if ($resp) return $resp;
         if (!$request->isPost()) {
             return (new JsonResponse(['status' => 'error', 'message' => 'Method not allowed']))->setStatusCode(405);
@@ -269,7 +286,7 @@ class UsersController extends AppController
     public function delete(Request $request): Response
     {
         $this->sendCorsIfNeeded($request);
-        $resp = $this->requireAuth($request);
+        $resp = $this->requireAdmin($request);
         if ($resp) return $resp;
 
         if (!$request->isPost()) {
