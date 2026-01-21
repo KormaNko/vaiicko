@@ -10,7 +10,7 @@ use Framework\DB\Connection;
 
 class UsersController extends AppController
 {
-
+//v tejto trieda som generoval urcite najviac kodu cez ai
     /**
      * index(Request): vstupná metóda pre endpoint users
      * - Pridáva CORS hlavičky (pre frontend počas vývoja).

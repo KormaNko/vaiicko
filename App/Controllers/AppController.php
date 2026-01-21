@@ -9,7 +9,8 @@ use Framework\Http\Responses\JsonResponse;
 use Framework\Http\Responses\RedirectResponse;
 use Framework\Http\Responses\Response;
 
-//  Toto je rodicovksy kontroler pre Vsetky ostatne ktore musia mat kontrolu prihlasenia odpovede pre ajajax a redirect na login
+//  Toto je rodicovksy kontroler pre Vsetky ostatne ktore musia mat kontrolu prihlasenia  redirect na login
+//toto vymyslal hlavne ai
 abstract class AppController extends BaseController
 {
     // Tuto metodu pouzivam aby som zistil ci ze uzivatel prihlaseny alebo nie a podla toho mu buď povolim pokracovat alebo ho presmerujem na login stranku

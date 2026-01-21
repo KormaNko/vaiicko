@@ -11,7 +11,7 @@ use Framework\Core\BaseController;
 use Framework\Http\Request;
 use Framework\Http\Responses\JsonResponse;
 use Framework\Http\Responses\Response;
-
+//bezne som si tu pomahal s ai aj genrtovali casti kododv
 /**
  * Class TaskController
  *
@@ -91,7 +91,11 @@ class TaskController extends AppController
 
         $task = new Task();
         $title = $body['title'] ?? $request->value('title');
-        $task->setTitle($title);
+        // Title is required and must be a non-empty string. Coerce and validate to avoid exceptions
+        if ($title === null || trim((string)$title) === '') {
+            return $this->json(['error' => 'Title is required'], 400);
+        }
+        $task->setTitle((string)$title);
         $task->setDescription($body['description'] ?? $request->value('description') ?? null);
 
         //tu sa kontroluje podla enumu cize to musi sediet
@@ -146,7 +150,12 @@ class TaskController extends AppController
         $task->setCreatedAt(date('Y-m-d H:i:s'));
         $task->setUpdatedAt(date('Y-m-d H:i:s'));
 
-        $task->save();
+        try {
+            $task->save();
+        } catch (\Exception $e) {
+            // Return a JSON error instead of an uncaught exception page. Include message for debugging.
+            return $this->json(['error' => 'Failed to save task', 'message' => $e->getMessage()], 500);
+        }
 
         return $this->json($task);
     }
