@@ -83,16 +83,39 @@ class CategoryController extends AppController
         $name = $data['name'] ?? $request->value('name');
         $color = $data['color'] ?? $request->value('color');
 
+        // new fields (accept snake_case or camelCase keys)
+        $planFrom = $data['plan_from'] ?? $data['planFrom'] ?? $request->value('plan_from') ?? $request->value('planFrom');
+        $planTo = $data['plan_to'] ?? $data['planTo'] ?? $request->value('plan_to') ?? $request->value('planTo');
+        $maxDuration = $data['max_duration'] ?? $data['maxDuration'] ?? $request->value('max_duration') ?? $request->value('maxDuration');
+        $atomicTask = $data['atomic_task'] ?? $data['atomicTask'] ?? $request->value('atomic_task') ?? $request->value('atomicTask');
+
         //normalizujem vstupy
         $name = isset($name) ? trim((string)$name) : '';
         $color = isset($color) ? trim((string)$color) : null;
+
+        $planFrom = isset($planFrom) ? trim((string)$planFrom) : null;
+        $planTo = isset($planTo) ? trim((string)$planTo) : null;
+        $maxDuration = isset($maxDuration) ? trim((string)$maxDuration) : null;
+        $atomicTask = isset($atomicTask) ? $atomicTask : null; // keep raw, will normalize below
 
         // validacia vstupov
         $errors = [];
         // ak je meno prazdne pridam chybu
         if ($name === '') $errors['name'] = 'Name is required';
         // ak je farba zadana a nie je v spravnom formate pridam chybu
-        if ($color !== null && $color !== '' && !preg_match('/^#[0-9A-Fa-f]{6}$/', $color)) $errors['color'] = 'Color must be hex like #RRGGBB';   // komplet vygenerovany riadok od AI
+        if ($color !== null && $color !== '' && !preg_match('/^#[0-9A-Fa-f]{6}$/', $color)) $errors['color'] = 'Color must be hex like #RRGGBB';
+
+        // simple time validation HH:MM or HH:MM:SS
+        $timeRe = '/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/';
+        if ($planFrom !== null && $planFrom !== '' && !preg_match($timeRe, $planFrom)) $errors['planFrom'] = 'Invalid time format';
+        if ($planTo !== null && $planTo !== '' && !preg_match($timeRe, $planTo)) $errors['planTo'] = 'Invalid time format';
+
+        // maxDuration should be integer or empty
+        if ($maxDuration !== null && $maxDuration !== '' && !preg_match('/^\d+$/', $maxDuration)) $errors['maxDuration'] = 'Must be an integer (minutes)';
+
+        // atomicTask should be 0/1 or boolean
+        if ($atomicTask !== null && $atomicTask !== '' && !in_array($atomicTask, [0, 1, '0', '1', true, false], true)) $errors['atomicTask'] = 'Invalid value';
+
         if (!empty($errors)) return (new JsonResponse(['status' => 'error', 'errors' => $errors]))->setStatusCode(400); // ak je chyba vypisem ju
 
 
@@ -101,6 +124,19 @@ class CategoryController extends AppController
         $cat->setUserId($this->user->getIdentity()->getId());
         $cat->setName($name);
         $cat->setColor($color === '' ? null : $color);
+
+        // set new fields on model (empty string -> null)
+        $cat->setPlanFrom($planFrom === '' ? null : $planFrom);
+        $cat->setPlanTo($planTo === '' ? null : $planTo);
+        $cat->setMaxDuration($maxDuration === '' ? null : ($maxDuration === null ? null : (int)$maxDuration));
+        // normalize atomic task to int 0/1, default 0
+        if ($atomicTask === null || $atomicTask === '') {
+            $cat->setAtomicTask(0);
+        } else {
+            if ($atomicTask === true || $atomicTask === '1' || $atomicTask === 1) $cat->setAtomicTask(1);
+            else $cat->setAtomicTask(0);
+        }
+
         $cat->setCreatedAt(date('Y-m-d H:i:s'));
         $cat->setUpdatedAt(date('Y-m-d H:i:s'));
 
@@ -172,6 +208,73 @@ class CategoryController extends AppController
                 $color = $request->value('color') === null ? null : trim((string)$request->value('color'));
                 if ($color !== null && $color !== '' && !preg_match('/^#[0-9A-Fa-f]{6}$/', $color)) return (new JsonResponse(['status'=>'error','errors'=>['color'=>'Invalid color']]))->setStatusCode(400);
                 $cat->setColor($color === '' ? null : $color);
+            }
+        }
+
+        // new fields handling for update
+        // plan_from / planFrom
+        if (array_key_exists('plan_from', (array)$data) || array_key_exists('planFrom', (array)$data)) {
+            $val = array_key_exists('plan_from', (array)$data) ? $data['plan_from'] : $data['planFrom'];
+            $val = $val === null ? null : trim((string)$val);
+            $timeRe = '/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/';
+            if ($val !== null && $val !== '' && !preg_match($timeRe, $val)) return (new JsonResponse(['status'=>'error','errors'=>['planFrom'=>'Invalid time']]))->setStatusCode(400);
+            $cat->setPlanFrom($val === '' ? null : $val);
+        } else {
+            if ($request->hasValue('plan_from') || $request->hasValue('planFrom')) {
+                $rv = $request->hasValue('plan_from') ? $request->value('plan_from') : $request->value('planFrom');
+                $rv = $rv === null ? null : trim((string)$rv);
+                $timeRe = '/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/';
+                if ($rv !== null && $rv !== '' && !preg_match($timeRe, $rv)) return (new JsonResponse(['status'=>'error','errors'=>['planFrom'=>'Invalid time']]))->setStatusCode(400);
+                $cat->setPlanFrom($rv === '' ? null : $rv);
+            }
+        }
+
+        // plan_to / planTo
+        if (array_key_exists('plan_to', (array)$data) || array_key_exists('planTo', (array)$data)) {
+            $val = array_key_exists('plan_to', (array)$data) ? $data['plan_to'] : $data['planTo'];
+            $val = $val === null ? null : trim((string)$val);
+            $timeRe = '/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/';
+            if ($val !== null && $val !== '' && !preg_match($timeRe, $val)) return (new JsonResponse(['status'=>'error','errors'=>['planTo'=>'Invalid time']]))->setStatusCode(400);
+            $cat->setPlanTo($val === '' ? null : $val);
+        } else {
+            if ($request->hasValue('plan_to') || $request->hasValue('planTo')) {
+                $rv = $request->hasValue('plan_to') ? $request->value('plan_to') : $request->value('planTo');
+                $rv = $rv === null ? null : trim((string)$rv);
+                $timeRe = '/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/';
+                if ($rv !== null && $rv !== '' && !preg_match($timeRe, $rv)) return (new JsonResponse(['status'=>'error','errors'=>['planTo'=>'Invalid time']]))->setStatusCode(400);
+                $cat->setPlanTo($rv === '' ? null : $rv);
+            }
+        }
+
+        // max_duration / maxDuration
+        if (array_key_exists('max_duration', (array)$data) || array_key_exists('maxDuration', (array)$data)) {
+            $val = array_key_exists('max_duration', (array)$data) ? $data['max_duration'] : $data['maxDuration'];
+            $val = $val === null ? null : trim((string)$val);
+            if ($val !== null && $val !== '' && !preg_match('/^\d+$/', $val)) return (new JsonResponse(['status'=>'error','errors'=>['maxDuration'=>'Must be integer']]))->setStatusCode(400);
+            $cat->setMaxDuration($val === '' ? null : ($val === null ? null : (int)$val));
+        } else {
+            if ($request->hasValue('max_duration') || $request->hasValue('maxDuration')) {
+                $rv = $request->hasValue('max_duration') ? $request->value('max_duration') : $request->value('maxDuration');
+                $rv = $rv === null ? null : trim((string)$rv);
+                if ($rv !== null && $rv !== '' && !preg_match('/^\d+$/', $rv)) return (new JsonResponse(['status'=>'error','errors'=>['maxDuration'=>'Must be integer']]))->setStatusCode(400);
+                $cat->setMaxDuration($rv === '' ? null : ($rv === null ? null : (int)$rv));
+            }
+        }
+
+        // atomic_task / atomicTask
+        if (array_key_exists('atomic_task', (array)$data) || array_key_exists('atomicTask', (array)$data)) {
+            $val = array_key_exists('atomic_task', (array)$data) ? $data['atomic_task'] : $data['atomicTask'];
+            if ($val === true || $val === '1' || $val === 1) $cat->setAtomicTask(1);
+            else if ($val === false || $val === '0' || $val === 0) $cat->setAtomicTask(0);
+            else if ($val === null || $val === '') $cat->setAtomicTask(0);
+            else return (new JsonResponse(['status'=>'error','errors'=>['atomicTask'=>'Invalid']]))->setStatusCode(400);
+        } else {
+            if ($request->hasValue('atomic_task') || $request->hasValue('atomicTask')) {
+                $rv = $request->hasValue('atomic_task') ? $request->value('atomic_task') : $request->value('atomicTask');
+                if ($rv === '1' || $rv === 1 || $rv === true) $cat->setAtomicTask(1);
+                else if ($rv === '0' || $rv === 0 || $rv === false) $cat->setAtomicTask(0);
+                else if ($rv === null || $rv === '') $cat->setAtomicTask(0);
+                else return (new JsonResponse(['status'=>'error','errors'=>['atomicTask'=>'Invalid']]))->setStatusCode(400);
             }
         }
 
