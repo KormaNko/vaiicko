@@ -39,6 +39,7 @@ class Task extends Model
         'user_id' => 'userId',
         'deadline' => 'deadline',
         'category_id' => 'categoryId',
+        'time_to_complete' => 'timeToComplete',
         'created_at' => 'createdAt',
         'updated_at' => 'updatedAt',
     ];
@@ -82,6 +83,11 @@ class Task extends Model
      * Category ID of the task (nullable, FK to categories.id).
      */
     protected ?int $categoryId;
+
+    /**
+     * Estimated time to complete in minutes (nullable, unsigned int).
+     */
+    protected ?int $timeToComplete;
 
     /**
      * Creation timestamp.
@@ -195,6 +201,37 @@ class Task extends Model
         $this->categoryId = $categoryId;
     }
 
+    /**
+     * Get estimated time to complete (minutes) or null.
+     */
+    public function getTimeToComplete(): ?int
+    {
+        return $this->timeToComplete;
+    }
+
+    /**
+     * Set estimated time to complete (minutes). Accepts null or non-negative integer.
+     *
+     * @param int|null $timeToComplete
+     */
+    public function setTimeToComplete(?int $timeToComplete): void
+    {
+        if ($timeToComplete !== null) {
+            if (!is_int($timeToComplete)) {
+                // allow numeric strings but cast to int
+                if (is_string($timeToComplete) && ctype_digit($timeToComplete)) {
+                    $timeToComplete = (int)$timeToComplete;
+                } else {
+                    throw new InvalidArgumentException('timeToComplete must be integer or null');
+                }
+            }
+            if ($timeToComplete < 0) {
+                throw new InvalidArgumentException('timeToComplete must be non-negative');
+            }
+        }
+        $this->timeToComplete = $timeToComplete;
+    }
+
     public function getCreatedAt(): string
     {
         return $this->createdAt;
@@ -229,6 +266,7 @@ class Task extends Model
             'description' => $this->description,
             'status' => $this->status,
             'priority' => $this->priority,
+            'timeToComplete' => $this->timeToComplete,
             'deadline' => $this->deadline,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,

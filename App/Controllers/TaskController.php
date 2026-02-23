@@ -145,6 +145,30 @@ class TaskController extends AppController
             $task->setCategoryId($catId);
         }
 
+        // handle timeToComplete (accept only snake_case `time_to_complete`)
+        $timeRaw = null;
+        if (array_key_exists('time_to_complete', $body)) {
+            $timeRaw = $body['time_to_complete'];
+        } elseif ($request->hasValue('time_to_complete')) {
+            $timeRaw = $request->value('time_to_complete');
+        }
+
+        if ($timeRaw === '' ) {
+            // empty string -> treat as null
+            $task->setTimeToComplete(null);
+        } elseif ($timeRaw === null) {
+            $task->setTimeToComplete(null);
+        } else {
+            if (!is_numeric($timeRaw)) {
+                return $this->json(['error' => 'Invalid time_to_complete, must be integer (minutes) or null'], 400);
+            }
+            $timeInt = (int)$timeRaw;
+            if ($timeInt < 0) {
+                return $this->json(['error' => 'Invalid time_to_complete, must be non-negative'], 400);
+            }
+            $task->setTimeToComplete($timeInt);
+        }
+
         $task->setCreatedAt(date('Y-m-d H:i:s'));
         $task->setUpdatedAt(date('Y-m-d H:i:s'));
 
@@ -221,6 +245,32 @@ class TaskController extends AppController
             }
         }
 
+        // handle timeToComplete on update only when provided (snake_case only)
+        if (array_key_exists('time_to_complete', $bodyArr) || $request->hasValue('time_to_complete')) {
+            $timeRaw = null;
+            if (array_key_exists('time_to_complete', $bodyArr)) {
+                $timeRaw = $bodyArr['time_to_complete'];
+            } elseif ($request->hasValue('time_to_complete')) {
+                $timeRaw = $request->value('time_to_complete');
+            }
+
+            if ($timeRaw === '') {
+                // empty string means clear the value
+                $task->setTimeToComplete(null);
+            } elseif ($timeRaw === null) {
+                $task->setTimeToComplete(null);
+            } else {
+                if (!is_numeric($timeRaw)) {
+                    return $this->json(['error' => 'Invalid time_to_complete, must be integer (minutes) or null'], 400);
+                }
+                $timeInt = (int)$timeRaw;
+                if ($timeInt < 0) {
+                    return $this->json(['error' => 'Invalid time_to_complete, must be non-negative'], 400);
+                }
+                $task->setTimeToComplete($timeInt);
+            }
+        }
+
         if (array_key_exists('category', $bodyArr) || $request->hasValue('category')) {
             return $this->json(['error' => "Invalid parameter 'category'. Send 'category_id' (int|null) only."], 400);
         }
@@ -278,4 +328,3 @@ class TaskController extends AppController
         return $this->json(['message' => 'Task deleted successfully']);
     }
 }
-
