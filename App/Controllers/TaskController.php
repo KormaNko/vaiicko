@@ -169,6 +169,28 @@ class TaskController extends AppController
             $task->setTimeToComplete($timeInt);
         }
 
+        // handle atomic_task (snake_case only). DB default is 0; if not provided, use default 0
+        $atomicRaw = null;
+        if (array_key_exists('atomic_task', $body)) {
+            $atomicRaw = $body['atomic_task'];
+        } elseif ($request->hasValue('atomic_task')) {
+            $atomicRaw = $request->value('atomic_task');
+        }
+
+        if ($atomicRaw === null || $atomicRaw === '') {
+            // not provided or empty -> default to 0
+            $task->setAtomicTask(0);
+        } else {
+            // accept 0/1, '0'/'1', true/false
+            if ($atomicRaw === true || $atomicRaw === '1' || $atomicRaw === 1) {
+                $task->setAtomicTask(1);
+            } elseif ($atomicRaw === false || $atomicRaw === '0' || $atomicRaw === 0) {
+                $task->setAtomicTask(0);
+            } else {
+                return $this->json(['error' => 'Invalid atomic_task value, must be 0 or 1'], 400);
+            }
+        }
+
         $task->setCreatedAt(date('Y-m-d H:i:s'));
         $task->setUpdatedAt(date('Y-m-d H:i:s'));
 
@@ -271,31 +293,26 @@ class TaskController extends AppController
             }
         }
 
-        if (array_key_exists('category', $bodyArr) || $request->hasValue('category')) {
-            return $this->json(['error' => "Invalid parameter 'category'. Send 'category_id' (int|null) only."], 400);
-        }
+        // handle atomic_task on update only when provided
+        if (array_key_exists('atomic_task', $bodyArr) || $request->hasValue('atomic_task')) {
+            $atomicRaw = null;
+            if (array_key_exists('atomic_task', $bodyArr)) {
+                $atomicRaw = $bodyArr['atomic_task'];
+            } elseif ($request->hasValue('atomic_task')) {
+                $atomicRaw = $request->value('atomic_task');
+            }
 
-        $catIdRaw = null;
-        if (array_key_exists('category_id', $bodyArr)) {
-            $catIdRaw = $bodyArr['category_id'];
-        } elseif ($request->hasValue('category_id')) {
-            $catIdRaw = $request->value('category_id');
-        }
-
-        // Only change category when category_id was explicitly provided in request
-        if (array_key_exists('category_id', $bodyArr) || $request->hasValue('category_id')) {
-            if ($catIdRaw === '' || $catIdRaw === null) {
-                $task->setCategoryId(null);
+            if ($atomicRaw === '' || $atomicRaw === null) {
+                // treat empty/null as 0 (DB default)
+                $task->setAtomicTask(0);
             } else {
-                if (!is_numeric($catIdRaw)) {
-                    return $this->json(['error' => 'Invalid category_id, must be integer or null'], 400);
+                if ($atomicRaw === true || $atomicRaw === '1' || $atomicRaw === 1) {
+                    $task->setAtomicTask(1);
+                } elseif ($atomicRaw === false || $atomicRaw === '0' || $atomicRaw === 0) {
+                    $task->setAtomicTask(0);
+                } else {
+                    return $this->json(['error' => 'Invalid atomic_task value, must be 0 or 1'], 400);
                 }
-                $catId = (int)$catIdRaw;
-                $category = CategoryModel::getOne($catId);
-                if (!$category || $category->getUserId() !== $this->user->getIdentity()->getId()) {
-                    return $this->json(['error' => 'Invalid category'], 400);
-                }
-                $task->setCategoryId($catId);
             }
         }
 

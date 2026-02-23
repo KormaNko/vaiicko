@@ -87,7 +87,7 @@ class CategoryController extends AppController
         $planFrom = $data['plan_from'] ?? $data['planFrom'] ?? $request->value('plan_from') ?? $request->value('planFrom');
         $planTo = $data['plan_to'] ?? $data['planTo'] ?? $request->value('plan_to') ?? $request->value('planTo');
         $maxDuration = $data['max_duration'] ?? $data['maxDuration'] ?? $request->value('max_duration') ?? $request->value('maxDuration');
-        $atomicTask = $data['atomic_task'] ?? $data['atomicTask'] ?? $request->value('atomic_task') ?? $request->value('atomicTask');
+        // atomic_task removed from categories table
 
         //normalizujem vstupy
         $name = isset($name) ? trim((string)$name) : '';
@@ -96,7 +96,7 @@ class CategoryController extends AppController
         $planFrom = isset($planFrom) ? trim((string)$planFrom) : null;
         $planTo = isset($planTo) ? trim((string)$planTo) : null;
         $maxDuration = isset($maxDuration) ? trim((string)$maxDuration) : null;
-        $atomicTask = isset($atomicTask) ? $atomicTask : null; // keep raw, will normalize below
+        // atomicTask handling removed
 
         // validacia vstupov
         $errors = [];
@@ -113,8 +113,7 @@ class CategoryController extends AppController
         // maxDuration should be integer or empty
         if ($maxDuration !== null && $maxDuration !== '' && !preg_match('/^\d+$/', $maxDuration)) $errors['maxDuration'] = 'Must be an integer (minutes)';
 
-        // atomicTask should be 0/1 or boolean
-        if ($atomicTask !== null && $atomicTask !== '' && !in_array($atomicTask, [0, 1, '0', '1', true, false], true)) $errors['atomicTask'] = 'Invalid value';
+        // atomicTask removed from categories (column dropped) - no validation here
 
         if (!empty($errors)) return (new JsonResponse(['status' => 'error', 'errors' => $errors]))->setStatusCode(400); // ak je chyba vypisem ju
 
@@ -129,13 +128,7 @@ class CategoryController extends AppController
         $cat->setPlanFrom($planFrom === '' ? null : $planFrom);
         $cat->setPlanTo($planTo === '' ? null : $planTo);
         $cat->setMaxDuration($maxDuration === '' ? null : ($maxDuration === null ? null : (int)$maxDuration));
-        // normalize atomic task to int 0/1, default 0
-        if ($atomicTask === null || $atomicTask === '') {
-            $cat->setAtomicTask(0);
-        } else {
-            if ($atomicTask === true || $atomicTask === '1' || $atomicTask === 1) $cat->setAtomicTask(1);
-            else $cat->setAtomicTask(0);
-        }
+        // atomicTask removed from categories (no longer set on model)
 
         $cat->setCreatedAt(date('Y-m-d H:i:s'));
         $cat->setUpdatedAt(date('Y-m-d H:i:s'));
@@ -261,22 +254,7 @@ class CategoryController extends AppController
             }
         }
 
-        // atomic_task / atomicTask
-        if (array_key_exists('atomic_task', (array)$data) || array_key_exists('atomicTask', (array)$data)) {
-            $val = array_key_exists('atomic_task', (array)$data) ? $data['atomic_task'] : $data['atomicTask'];
-            if ($val === true || $val === '1' || $val === 1) $cat->setAtomicTask(1);
-            else if ($val === false || $val === '0' || $val === 0) $cat->setAtomicTask(0);
-            else if ($val === null || $val === '') $cat->setAtomicTask(0);
-            else return (new JsonResponse(['status'=>'error','errors'=>['atomicTask'=>'Invalid']]))->setStatusCode(400);
-        } else {
-            if ($request->hasValue('atomic_task') || $request->hasValue('atomicTask')) {
-                $rv = $request->hasValue('atomic_task') ? $request->value('atomic_task') : $request->value('atomicTask');
-                if ($rv === '1' || $rv === 1 || $rv === true) $cat->setAtomicTask(1);
-                else if ($rv === '0' || $rv === 0 || $rv === false) $cat->setAtomicTask(0);
-                else if ($rv === null || $rv === '') $cat->setAtomicTask(0);
-                else return (new JsonResponse(['status'=>'error','errors'=>['atomicTask'=>'Invalid']]))->setStatusCode(400);
-            }
-        }
+        // atomic_task removed from categories
 
         $cat->setUpdatedAt(date('Y-m-d H:i:s'));
         try {

@@ -40,6 +40,7 @@ class Task extends Model
         'deadline' => 'deadline',
         'category_id' => 'categoryId',
         'time_to_complete' => 'timeToComplete',
+        'atomic_task' => 'atomicTask',
         'created_at' => 'createdAt',
         'updated_at' => 'updatedAt',
     ];
@@ -88,6 +89,11 @@ class Task extends Model
      * Estimated time to complete in minutes (nullable, unsigned int).
      */
     protected ?int $timeToComplete;
+
+    /**
+     * Whether this task is atomic (cannot be split). 0 or 1.
+     */
+    protected int $atomicTask;
 
     /**
      * Creation timestamp.
@@ -232,6 +238,25 @@ class Task extends Model
         $this->timeToComplete = $timeToComplete;
     }
 
+    /**
+     * Get atomicTask (0 or 1)
+     */
+    public function getAtomicTask(): int
+    {
+        return $this->atomicTask;
+    }
+
+    /**
+     * Set atomicTask (0 or 1)
+     */
+    public function setAtomicTask(int $atomicTask): void
+    {
+        if (!in_array($atomicTask, [0, 1], true)) {
+            throw new InvalidArgumentException('atomicTask must be 0 or 1');
+        }
+        $this->atomicTask = $atomicTask;
+    }
+
     public function getCreatedAt(): string
     {
         return $this->createdAt;
@@ -267,6 +292,7 @@ class Task extends Model
             'status' => $this->status,
             'priority' => $this->priority,
             'timeToComplete' => $this->timeToComplete,
+            'atomicTask' => $this->atomicTask,
             'deadline' => $this->deadline,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,

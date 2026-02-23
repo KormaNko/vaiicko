@@ -19,7 +19,6 @@ class Category extends Model
         'plan_from' => 'planFrom',
         'plan_to' => 'planTo',
         'max_duration' => 'maxDuration',
-        'atomic_task' => 'atomicTask',
     ];
 
     protected int $id;
@@ -33,7 +32,6 @@ class Category extends Model
     protected ?string $planFrom;
     protected ?string $planTo;
     protected ?int $maxDuration;
-    protected int $atomicTask;
 
     public function getId(): int { return $this->id; }
     public function setId(int $id): void { $this->id = $id; }
@@ -63,9 +61,6 @@ class Category extends Model
     public function getMaxDuration(): ?int { return $this->maxDuration; }
     public function setMaxDuration(?int $maxDuration): void { $this->maxDuration = $maxDuration; }
 
-    public function getAtomicTask(): int { return $this->atomicTask; }
-    public function setAtomicTask(int $atomicTask): void { $this->atomicTask = $atomicTask; }
-
     public function jsonSerialize(): array
     {
         return [
@@ -78,7 +73,6 @@ class Category extends Model
             'planFrom' => $this->planFrom,
             'planTo' => $this->planTo,
             'maxDuration' => $this->maxDuration,
-            'atomicTask' => $this->atomicTask,
         ];
     }
 }
