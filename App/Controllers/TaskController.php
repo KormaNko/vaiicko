@@ -191,6 +191,27 @@ class TaskController extends AppController
             }
         }
 
+        // handle is_dynamic (snake_case only). DB default is 0; if not provided, use default 0
+        $dynamicRaw = null;
+        if (array_key_exists('is_dynamic', $body)) {
+            $dynamicRaw = $body['is_dynamic'];
+        } elseif ($request->hasValue('is_dynamic')) {
+            $dynamicRaw = $request->value('is_dynamic');
+        }
+
+        if ($dynamicRaw === null || $dynamicRaw === '') {
+            // not provided or empty -> default to 0
+            $task->setIsDynamic(0);
+        } else {
+            if ($dynamicRaw === true || $dynamicRaw === '1' || $dynamicRaw === 1) {
+                $task->setIsDynamic(1);
+            } elseif ($dynamicRaw === false || $dynamicRaw === '0' || $dynamicRaw === 0) {
+                $task->setIsDynamic(0);
+            } else {
+                return $this->json(['error' => 'Invalid is_dynamic value, must be 0 or 1'], 400);
+            }
+        }
+
         $task->setCreatedAt(date('Y-m-d H:i:s'));
         $task->setUpdatedAt(date('Y-m-d H:i:s'));
 
@@ -312,6 +333,29 @@ class TaskController extends AppController
                     $task->setAtomicTask(0);
                 } else {
                     return $this->json(['error' => 'Invalid atomic_task value, must be 0 or 1'], 400);
+                }
+            }
+        }
+
+        // handle is_dynamic on update only when provided
+        if (array_key_exists('is_dynamic', $bodyArr) || $request->hasValue('is_dynamic')) {
+            $dynamicRaw = null;
+            if (array_key_exists('is_dynamic', $bodyArr)) {
+                $dynamicRaw = $bodyArr['is_dynamic'];
+            } elseif ($request->hasValue('is_dynamic')) {
+                $dynamicRaw = $request->value('is_dynamic');
+            }
+
+            if ($dynamicRaw === '' || $dynamicRaw === null) {
+                // treat empty/null as 0 (DB default)
+                $task->setIsDynamic(0);
+            } else {
+                if ($dynamicRaw === true || $dynamicRaw === '1' || $dynamicRaw === 1) {
+                    $task->setIsDynamic(1);
+                } elseif ($dynamicRaw === false || $dynamicRaw === '0' || $dynamicRaw === 0) {
+                    $task->setIsDynamic(0);
+                } else {
+                    return $this->json(['error' => 'Invalid is_dynamic value, must be 0 or 1'], 400);
                 }
             }
         }

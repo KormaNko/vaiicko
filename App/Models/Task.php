@@ -39,8 +39,10 @@ class Task extends Model
         'user_id' => 'userId',
         'deadline' => 'deadline',
         'category_id' => 'categoryId',
+        'parent_id' => 'parentId',
         'time_to_complete' => 'timeToComplete',
         'atomic_task' => 'atomicTask',
+        'is_dynamic' => 'isDynamic',
         'created_at' => 'createdAt',
         'updated_at' => 'updatedAt',
     ];
@@ -86,6 +88,11 @@ class Task extends Model
     protected ?int $categoryId;
 
     /**
+     * Parent task ID (nullable, FK to tasks.id). Represents a parent/child relationship.
+     */
+    protected ?int $parentId;
+
+    /**
      * Estimated time to complete in minutes (nullable, unsigned int).
      */
     protected ?int $timeToComplete;
@@ -94,6 +101,11 @@ class Task extends Model
      * Whether this task is atomic (cannot be split). 0 or 1.
      */
     protected int $atomicTask;
+
+    /**
+     * Whether this task is dynamic (TINYINT 0/1).
+     */
+    protected int $isDynamic;
 
     /**
      * Creation timestamp.
@@ -208,6 +220,34 @@ class Task extends Model
     }
 
     /**
+     * Get parent task id (nullable).
+     */
+    public function getParentId(): ?int
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * Set parent task id. Accepts null or positive integer (allow numeric strings).
+     */
+    public function setParentId(?int $parentId): void
+    {
+        if ($parentId !== null) {
+            if (!is_int($parentId)) {
+                if (is_string($parentId) && ctype_digit($parentId)) {
+                    $parentId = (int)$parentId;
+                } else {
+                    throw new InvalidArgumentException('parentId must be an integer or null');
+                }
+            }
+            if ($parentId <= 0) {
+                throw new InvalidArgumentException('parentId must be a positive integer');
+            }
+        }
+        $this->parentId = $parentId;
+    }
+
+    /**
      * Get estimated time to complete (minutes) or null.
      */
     public function getTimeToComplete(): ?int
@@ -257,6 +297,25 @@ class Task extends Model
         $this->atomicTask = $atomicTask;
     }
 
+    /**
+     * Get isDynamic (0 or 1)
+     */
+    public function getIsDynamic(): int
+    {
+        return $this->isDynamic;
+    }
+
+    /**
+     * Set isDynamic (0 or 1)
+     */
+    public function setIsDynamic(int $isDynamic): void
+    {
+        if (!in_array($isDynamic, [0, 1], true)) {
+            throw new InvalidArgumentException('isDynamic must be 0 or 1');
+        }
+        $this->isDynamic = $isDynamic;
+    }
+
     public function getCreatedAt(): string
     {
         return $this->createdAt;
@@ -293,9 +352,11 @@ class Task extends Model
             'priority' => $this->priority,
             'timeToComplete' => $this->timeToComplete,
             'atomicTask' => $this->atomicTask,
+            'isDynamic' => $this->isDynamic,
             'deadline' => $this->deadline,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
+            'parentId' => $this->parentId,
             // category must always be present as an object or null (only id, name, color)
             'category' => null,
         ];

@@ -1,6 +1,7 @@
 -- Create tasks table
 CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    parent_id INT UNSIGNED DEFAULT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending',
@@ -10,5 +11,6 @@ CREATE TABLE IF NOT EXISTS tasks (
     category VARCHAR(100) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES tasks(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
