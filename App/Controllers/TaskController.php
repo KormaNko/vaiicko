@@ -11,6 +11,7 @@ use Framework\Core\BaseController;
 use Framework\Http\Request;
 use Framework\Http\Responses\JsonResponse;
 use Framework\Http\Responses\Response;
+use App\Services\SchedulerService;
 //bezne som si tu pomahal s ai aj genrtovali casti kododv
 /**
  * Class TaskController
@@ -89,8 +90,18 @@ class TaskController extends AppController
             }
         }
         //prijmam categori_id ale nie category objekt/string
-        if (array_key_exists('category', $body) || $request->hasValue('category')) {
-            return $this->json(['error' => "Invalid parameter 'category'. Send 'category_id' (int|null) only."], 400);
+        // frontend sometimes sends a `category` object {id,name}. Accept that and map to category_id.
+        if (array_key_exists('category', $body) && is_array($body['category']) && array_key_exists('id', $body['category'])) {
+            $body['category_id'] = $body['category']['id'];
+        } elseif ($request->hasValue('category')) {
+            // if form-encoded and category is present as JSON/string, try to decode
+            $catVal = $request->value('category');
+            if (is_string($catVal)) {
+                $decoded = json_decode($catVal, true);
+                if (is_array($decoded) && array_key_exists('id', $decoded)) {
+                    $body['category_id'] = $decoded['id'];
+                }
+            }
         }
 
         $task = new Task();
@@ -125,10 +136,15 @@ class TaskController extends AppController
 
        //moze prist ako jsno alebo formular
         $catIdRaw = null;
+        // accept both `category_id` and camelCase `categoryId`
         if (array_key_exists('category_id', $body)) {
             $catIdRaw = $body['category_id'];
+        } elseif (array_key_exists('categoryId', $body)) {
+            $catIdRaw = $body['categoryId'];
         } elseif ($request->hasValue('category_id')) {
             $catIdRaw = $request->value('category_id');
+        } elseif ($request->hasValue('categoryId')) {
+            $catIdRaw = $request->value('categoryId');
         }
 
         if ($catIdRaw === null || $catIdRaw === '') {
@@ -145,12 +161,46 @@ class TaskController extends AppController
             $task->setCategoryId($catId);
         }
 
+        // handle parent task id (accept parent_id or parentId)
+        $parentRaw = null;
+        if (array_key_exists('parent_id', $body)) {
+            $parentRaw = $body['parent_id'];
+        } elseif (array_key_exists('parentId', $body)) {
+            $parentRaw = $body['parentId'];
+        } elseif ($request->hasValue('parent_id')) {
+            $parentRaw = $request->value('parent_id');
+        } elseif ($request->hasValue('parentId')) {
+            $parentRaw = $request->value('parentId');
+        }
+
+        // treat empty string/null/0 as no parent
+        if ($parentRaw === '' || $parentRaw === null) {
+            $task->setParentId(null);
+        } else {
+            if (!is_numeric($parentRaw)) {
+                return $this->json(['error' => 'Invalid parent_id, must be integer or null'], 400);
+            }
+            $parentInt = (int)$parentRaw;
+            if ($parentInt === 0) {
+                // frontend sometimes sends 0 — treat as no parent
+                $task->setParentId(null);
+            } else {
+                $task->setParentId($parentInt);
+            }
+        }
+
+
         // handle timeToComplete (accept only snake_case `time_to_complete`)
         $timeRaw = null;
+        // accept snake_case and camelCase
         if (array_key_exists('time_to_complete', $body)) {
             $timeRaw = $body['time_to_complete'];
+        } elseif (array_key_exists('timeToComplete', $body)) {
+            $timeRaw = $body['timeToComplete'];
         } elseif ($request->hasValue('time_to_complete')) {
             $timeRaw = $request->value('time_to_complete');
+        } elseif ($request->hasValue('timeToComplete')) {
+            $timeRaw = $request->value('timeToComplete');
         }
 
         if ($timeRaw === '' ) {
@@ -171,10 +221,15 @@ class TaskController extends AppController
 
         // handle atomic_task (snake_case only). DB default is 0; if not provided, use default 0
         $atomicRaw = null;
+        // accept atomic_task or camelCase atomicTask
         if (array_key_exists('atomic_task', $body)) {
             $atomicRaw = $body['atomic_task'];
+        } elseif (array_key_exists('atomicTask', $body)) {
+            $atomicRaw = $body['atomicTask'];
         } elseif ($request->hasValue('atomic_task')) {
             $atomicRaw = $request->value('atomic_task');
+        } elseif ($request->hasValue('atomicTask')) {
+            $atomicRaw = $request->value('atomicTask');
         }
 
         if ($atomicRaw === null || $atomicRaw === '') {
@@ -193,10 +248,15 @@ class TaskController extends AppController
 
         // handle is_dynamic (snake_case only). DB default is 0; if not provided, use default 0
         $dynamicRaw = null;
+        // accept is_dynamic or camelCase isDynamic
         if (array_key_exists('is_dynamic', $body)) {
             $dynamicRaw = $body['is_dynamic'];
+        } elseif (array_key_exists('isDynamic', $body)) {
+            $dynamicRaw = $body['isDynamic'];
         } elseif ($request->hasValue('is_dynamic')) {
             $dynamicRaw = $request->value('is_dynamic');
+        } elseif ($request->hasValue('isDynamic')) {
+            $dynamicRaw = $request->value('isDynamic');
         }
 
         if ($dynamicRaw === null || $dynamicRaw === '') {
@@ -212,13 +272,80 @@ class TaskController extends AppController
             }
         }
 
+        // optional planned start/end (accept camelCase and snake_case)
+        $plannedStartRaw = null;
+        if (array_key_exists('planned_start', $body)) {
+            $plannedStartRaw = $body['planned_start'];
+        } elseif (array_key_exists('plannedStart', $body)) {
+            $plannedStartRaw = $body['plannedStart'];
+        } elseif ($request->hasValue('planned_start')) {
+            $plannedStartRaw = $request->value('planned_start');
+        } elseif ($request->hasValue('plannedStart')) {
+            $plannedStartRaw = $request->value('plannedStart');
+        }
+
+        if ($plannedStartRaw === '' ) {
+            $task->setPlannedStart(null);
+        } elseif ($plannedStartRaw !== null) {
+            try {
+                $task->setPlannedStart($plannedStartRaw);
+            } catch (InvalidArgumentException $e) {
+                return $this->json(['error' => 'Invalid planned_start format'], 400);
+            }
+        }
+
+        $plannedEndRaw = null;
+        if (array_key_exists('planned_end', $body)) {
+            $plannedEndRaw = $body['planned_end'];
+        } elseif (array_key_exists('plannedEnd', $body)) {
+            $plannedEndRaw = $body['plannedEnd'];
+        } elseif ($request->hasValue('planned_end')) {
+            $plannedEndRaw = $request->value('planned_end');
+        } elseif ($request->hasValue('plannedEnd')) {
+            $plannedEndRaw = $request->value('plannedEnd');
+        }
+
+        if ($plannedEndRaw === '' ) {
+            $task->setPlannedEnd(null);
+        } elseif ($plannedEndRaw !== null) {
+            try {
+                $task->setPlannedEnd($plannedEndRaw);
+            } catch (InvalidArgumentException $e) {
+                return $this->json(['error' => 'Invalid planned_end format'], 400);
+            }
+        }
+
         $task->setCreatedAt(date('Y-m-d H:i:s'));
         $task->setUpdatedAt(date('Y-m-d H:i:s'));
+
+        // If task is dynamic but timeToComplete not provided, set a sensible default so scheduler can plan it
+        if ($task->getIsDynamic() === 1 && $task->getTimeToComplete() === null) {
+            $task->setTimeToComplete(30); // default 30 minutes
+        }
 
         try {
             $task->save();
         } catch (\Exception $e) {
             return $this->json(['error' => 'Failed to save task', 'message' => $e->getMessage()], 500);
+        }
+
+        // log that we're about to run scheduler (best-effort)
+        try {
+            $root = dirname(__DIR__, 2);
+            $logDir = $root . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'logs';
+            if (!is_dir($logDir)) {@mkdir($logDir, 0777, true);}
+            $logFile = $logDir . DIRECTORY_SEPARATOR . 'scheduler.log';
+            @file_put_contents($logFile, '['.date('Y-m-d H:i:s').'] Controller triggering scheduler for user=' . $this->user->getIdentity()->getId() . PHP_EOL, FILE_APPEND | LOCK_EX);
+        } catch (\Throwable $e) {
+            // ignore logging errors
+        }
+
+        // trigger rescheduling for this user (do not fail the request if scheduler errors)
+        try {
+            $scheduler = new SchedulerService();
+            $scheduler->recalculateForUser($this->user->getIdentity()->getId());
+        } catch (\Exception $e) {
+            // ignore scheduler errors
         }
 
         return $this->json($task);
@@ -288,13 +415,46 @@ class TaskController extends AppController
             }
         }
 
+        // accept parent_id / parentId on update
+        if (array_key_exists('parent_id', $bodyArr) || array_key_exists('parentId', $bodyArr) || $request->hasValue('parent_id') || $request->hasValue('parentId')) {
+            $parentRaw = null;
+            if (array_key_exists('parent_id', $bodyArr)) {
+                $parentRaw = $bodyArr['parent_id'];
+            } elseif (array_key_exists('parentId', $bodyArr)) {
+                $parentRaw = $bodyArr['parentId'];
+            } elseif ($request->hasValue('parent_id')) {
+                $parentRaw = $request->value('parent_id');
+            } elseif ($request->hasValue('parentId')) {
+                $parentRaw = $request->value('parentId');
+            }
+
+            if ($parentRaw === '' || $parentRaw === null) {
+                $task->setParentId(null);
+            } else {
+                if (!is_numeric($parentRaw)) {
+                    return $this->json(['error' => 'Invalid parent_id, must be integer or null'], 400);
+                }
+                $parentInt = (int)$parentRaw;
+                if ($parentInt === 0) {
+                    // treat 0 as null
+                    $task->setParentId(null);
+                } else {
+                    $task->setParentId($parentInt);
+                }
+            }
+        }
+
         // handle timeToComplete on update only when provided (snake_case only)
-        if (array_key_exists('time_to_complete', $bodyArr) || $request->hasValue('time_to_complete')) {
+        if (array_key_exists('time_to_complete', $bodyArr) || array_key_exists('timeToComplete', $bodyArr) || $request->hasValue('time_to_complete') || $request->hasValue('timeToComplete')) {
             $timeRaw = null;
             if (array_key_exists('time_to_complete', $bodyArr)) {
                 $timeRaw = $bodyArr['time_to_complete'];
+            } elseif (array_key_exists('timeToComplete', $bodyArr)) {
+                $timeRaw = $bodyArr['timeToComplete'];
             } elseif ($request->hasValue('time_to_complete')) {
                 $timeRaw = $request->value('time_to_complete');
+            } elseif ($request->hasValue('timeToComplete')) {
+                $timeRaw = $request->value('timeToComplete');
             }
 
             if ($timeRaw === '') {
@@ -315,12 +475,16 @@ class TaskController extends AppController
         }
 
         // handle atomic_task on update only when provided
-        if (array_key_exists('atomic_task', $bodyArr) || $request->hasValue('atomic_task')) {
+        if (array_key_exists('atomic_task', $bodyArr) || array_key_exists('atomicTask', $bodyArr) || $request->hasValue('atomic_task') || $request->hasValue('atomicTask')) {
             $atomicRaw = null;
             if (array_key_exists('atomic_task', $bodyArr)) {
                 $atomicRaw = $bodyArr['atomic_task'];
+            } elseif (array_key_exists('atomicTask', $bodyArr)) {
+                $atomicRaw = $bodyArr['atomicTask'];
             } elseif ($request->hasValue('atomic_task')) {
                 $atomicRaw = $request->value('atomic_task');
+            } elseif ($request->hasValue('atomicTask')) {
+                $atomicRaw = $request->value('atomicTask');
             }
 
             if ($atomicRaw === '' || $atomicRaw === null) {
@@ -338,12 +502,16 @@ class TaskController extends AppController
         }
 
         // handle is_dynamic on update only when provided
-        if (array_key_exists('is_dynamic', $bodyArr) || $request->hasValue('is_dynamic')) {
+        if (array_key_exists('is_dynamic', $bodyArr) || array_key_exists('isDynamic', $bodyArr) || $request->hasValue('is_dynamic') || $request->hasValue('isDynamic')) {
             $dynamicRaw = null;
             if (array_key_exists('is_dynamic', $bodyArr)) {
                 $dynamicRaw = $bodyArr['is_dynamic'];
+            } elseif (array_key_exists('isDynamic', $bodyArr)) {
+                $dynamicRaw = $bodyArr['isDynamic'];
             } elseif ($request->hasValue('is_dynamic')) {
                 $dynamicRaw = $request->value('is_dynamic');
+            } elseif ($request->hasValue('isDynamic')) {
+                $dynamicRaw = $request->value('isDynamic');
             }
 
             if ($dynamicRaw === '' || $dynamicRaw === null) {
@@ -362,7 +530,31 @@ class TaskController extends AppController
 
         $task->setUpdatedAt(date('Y-m-d H:i:s'));
 
+        // If task turned dynamic and timeToComplete is missing, set default to 30 minutes so scheduler can plan it
+        if ($task->getIsDynamic() === 1 && $task->getTimeToComplete() === null) {
+            $task->setTimeToComplete(30);
+        }
+
+        // log that update path is triggering scheduler
+        try {
+            $root = dirname(__DIR__, 2);
+            $logDir = $root . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'logs';
+            if (!is_dir($logDir)) {@mkdir($logDir, 0777, true);}
+            $logFile = $logDir . DIRECTORY_SEPARATOR . 'scheduler.log';
+            @file_put_contents($logFile, '['.date('Y-m-d H:i:s').'] Controller (update) triggering scheduler for user=' . $this->user->getIdentity()->getId() . PHP_EOL, FILE_APPEND | LOCK_EX);
+        } catch (\Throwable $e) {
+            // ignore logging errors
+        }
+
         $task->save();
+
+        // trigger rescheduling for this user (do not fail the request if scheduler errors)
+        try {
+            $scheduler = new SchedulerService();
+            $scheduler->recalculateForUser($this->user->getIdentity()->getId());
+        } catch (\Exception $e) {
+            // ignore scheduler errors
+        }
 
         return $this->json($task);
     }
@@ -385,6 +577,14 @@ class TaskController extends AppController
         }
 
         $task->delete();
+
+        // trigger rescheduling for this user (do not fail the request if scheduler errors)
+        try {
+            $scheduler = new SchedulerService();
+            $scheduler->recalculateForUser($this->user->getIdentity()->getId());
+        } catch (\Exception $e) {
+            // ignore scheduler errors
+        }
 
         return $this->json(['message' => 'Task deleted successfully']);
     }

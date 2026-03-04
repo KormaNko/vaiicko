@@ -43,79 +43,93 @@ class Task extends Model
         'time_to_complete' => 'timeToComplete',
         'atomic_task' => 'atomicTask',
         'is_dynamic' => 'isDynamic',
+        'planned_start' => 'plannedStart',
+        'planned_end' => 'plannedEnd',
         'created_at' => 'createdAt',
         'updated_at' => 'updatedAt',
     ];
 
+    // Initialize typed properties with safe defaults to avoid uninitialized property errors
+
     /**
      * Task ID.
      */
-    protected int $id;
+    protected int $id = 0;
 
     /**
      * Task title.
      */
-    protected string $title;
+    protected string $title = '';
 
     /**
      * Task description.
      */
-    protected ?string $description;
+    protected ?string $description = null;
 
     /**
      * Task status (e.g., 'pending', 'in_progress', 'completed').
      */
-    protected string $status;
+    protected string $status = TaskStatus::PENDING;
 
     /**
      * Task priority (numerical value, e.g., 1=low, 2=medium, 3=high).
      */
-    protected int $priority;
+    protected int $priority = 2;
 
     /**
      * User ID who owns the task.
      */
-    protected int $userId;
+    protected int $userId = 0;
 
     /**
      * Deadline timestamp (nullable).
      */
-    protected ?string $deadline;
+    protected ?string $deadline = null;
 
     /**
      * Category ID of the task (nullable, FK to categories.id).
      */
-    protected ?int $categoryId;
+    protected ?int $categoryId = null;
 
     /**
      * Parent task ID (nullable, FK to tasks.id). Represents a parent/child relationship.
      */
-    protected ?int $parentId;
+    protected ?int $parentId = null;
 
     /**
      * Estimated time to complete in minutes (nullable, unsigned int).
      */
-    protected ?int $timeToComplete;
+    protected ?int $timeToComplete = null;
 
     /**
      * Whether this task is atomic (cannot be split). 0 or 1.
      */
-    protected int $atomicTask;
+    protected int $atomicTask = 0;
 
     /**
      * Whether this task is dynamic (TINYINT 0/1).
      */
-    protected int $isDynamic;
+    protected int $isDynamic = 0;
+
+    /**
+     * Planned start datetime (nullable), stored as 'Y-m-d H:i:s' string or null.
+     */
+    protected ?string $plannedStart = null;
+
+    /**
+     * Planned end datetime (nullable), stored as 'Y-m-d H:i:s' string or null.
+     */
+    protected ?string $plannedEnd = null;
 
     /**
      * Creation timestamp.
      */
-    protected string $createdAt;
+    protected string $createdAt = '';
 
     /**
      * Update timestamp.
      */
-    protected string $updatedAt;
+    protected string $updatedAt = '';
 
     /**
      * Constructor to initialize a Task instance.
@@ -316,6 +330,78 @@ class Task extends Model
         $this->isDynamic = $isDynamic;
     }
 
+    /**
+     * Get planned start (nullable) as 'Y-m-d H:i:s' string or null.
+     */
+    public function getPlannedStart(): ?string
+    {
+        return $this->plannedStart;
+    }
+
+    /**
+     * Set planned start. Accepts null, string parseable by DateTime, or DateTime instance.
+     */
+    public function setPlannedStart($plannedStart): void
+    {
+        if ($plannedStart === null) {
+            $this->plannedStart = null;
+            return;
+        }
+
+        if ($plannedStart instanceof \DateTime) {
+            $this->plannedStart = $plannedStart->format('Y-m-d H:i:s');
+            return;
+        }
+
+        if (is_string($plannedStart)) {
+            try {
+                $dt = new \DateTime($plannedStart);
+                $this->plannedStart = $dt->format('Y-m-d H:i:s');
+                return;
+            } catch (\Exception $e) {
+                throw new InvalidArgumentException('plannedStart must be a valid datetime string, DateTime or null');
+            }
+        }
+
+        throw new InvalidArgumentException('plannedStart must be a string, DateTime or null');
+    }
+
+    /**
+     * Get planned end (nullable) as 'Y-m-d H:i:s' string or null.
+     */
+    public function getPlannedEnd(): ?string
+    {
+        return $this->plannedEnd;
+    }
+
+    /**
+     * Set planned end. Accepts null, string parseable by DateTime, or DateTime instance.
+     */
+    public function setPlannedEnd($plannedEnd): void
+    {
+        if ($plannedEnd === null) {
+            $this->plannedEnd = null;
+            return;
+        }
+
+        if ($plannedEnd instanceof \DateTime) {
+            $this->plannedEnd = $plannedEnd->format('Y-m-d H:i:s');
+            return;
+        }
+
+        if (is_string($plannedEnd)) {
+            try {
+                $dt = new \DateTime($plannedEnd);
+                $this->plannedEnd = $dt->format('Y-m-d H:i:s');
+                return;
+            } catch (\Exception $e) {
+                throw new InvalidArgumentException('plannedEnd must be a valid datetime string, DateTime or null');
+            }
+        }
+
+        throw new InvalidArgumentException('plannedEnd must be a string, DateTime or null');
+    }
+
     public function getCreatedAt(): string
     {
         return $this->createdAt;
@@ -337,7 +423,7 @@ class Task extends Model
     }
 
     /**
-     * Specify data which should be serialized to JSON.
+     * Specif3y data which should be serialized to JSON.
      *
      * @return array
      */
@@ -354,6 +440,8 @@ class Task extends Model
             'atomicTask' => $this->atomicTask,
             'isDynamic' => $this->isDynamic,
             'deadline' => $this->deadline,
+            'plannedStart' => $this->plannedStart,
+            'plannedEnd' => $this->plannedEnd,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
             'parentId' => $this->parentId,
