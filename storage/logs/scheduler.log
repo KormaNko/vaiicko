@@ -276,3 +276,9 @@
 [2026-03-04 16:23:05] Considering task id=153 timeToComplete=120 deadline=NULL
 [2026-03-04 16:23:05] Scheduled task id=153 start=2026-03-04 10:00:00 end=2026-03-04 12:00:00
 [2026-03-04 16:23:05] Scheduler finished for user=21
+[2026-03-04 16:35:32] Controller triggering scheduler for user=21
+[2026-03-04 16:35:32] Scheduler run for user=21
+[2026-03-04 16:35:32] Scheduler finished for user=21
+[2026-03-04 16:36:35] Controller triggering scheduler for user=21
+[2026-03-04 16:36:35] Scheduler run for user=21
+[2026-03-04 16:36:35] Scheduler finished for user=21
