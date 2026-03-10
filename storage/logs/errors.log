@@ -34,3 +34,92 @@ Trace:
 #2 /var/www/html/public/index.php(31): Framework\Core\App->run()
 #3 {main}
 
+[2026-03-08 15:53:15] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Exception))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Exception ---
+Message: Database table `tasks` contains columns that do not have corresponding properties in model class `App\Models\Task`: `is_schedule_block`. Please add these properties to the model class or remove them from the database table.
+File: /var/www/html/Framework/Core/Model.php:475
+Trace:
+#0 /var/www/html/Framework/Core/Model.php(119): Framework\Core\Model::getDBColumnNamesList()
+#1 /var/www/html/App/Controllers/TaskController.php(59): Framework\Core\Model::getAll('user_id = ?', Array, 'created_at DESC')
+#2 [internal function]: App\Controllers\TaskController->index(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-03-08 15:53:15] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Exception))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Exception ---
+Message: Database table `tasks` contains columns that do not have corresponding properties in model class `App\Models\Task`: `is_schedule_block`. Please add these properties to the model class or remove them from the database table.
+File: /var/www/html/Framework/Core/Model.php:475
+Trace:
+#0 /var/www/html/Framework/Core/Model.php(119): Framework\Core\Model::getDBColumnNamesList()
+#1 /var/www/html/App/Controllers/TaskController.php(59): Framework\Core\Model::getAll('user_id = ?', Array, 'created_at DESC')
+#2 [internal function]: App\Controllers\TaskController->index(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-03-10 14:59:10] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(ParseError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 ParseError ---
+Message: syntax error, unexpected token "catch"
+File: /var/www/html/App/Controllers/TaskController.php:378
+Trace:
+#0 /var/www/html/Framework/Core/Router.php(30): ClassLoader::{closure}('App\\Controllers...')
+#1 /var/www/html/Framework/Core/App.php(95): Framework\Core\Router->processURL()
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+
+[2026-03-10 14:59:16] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(ParseError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 ParseError ---
+Message: syntax error, unexpected token "catch"
+File: /var/www/html/App/Controllers/TaskController.php:378
+Trace:
+#0 /var/www/html/Framework/Core/Router.php(30): ClassLoader::{closure}('App\\Controllers...')
+#1 /var/www/html/Framework/Core/App.php(95): Framework\Core\Router->processURL()
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+
+[2026-03-10 14:59:35] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(ParseError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 ParseError ---
+Message: syntax error, unexpected token "catch"
+File: /var/www/html/App/Controllers/TaskController.php:378
+Trace:
+#0 /var/www/html/Framework/Core/Router.php(30): ClassLoader::{closure}('App\\Controllers...')
+#1 /var/www/html/Framework/Core/App.php(95): Framework\Core\Router->processURL()
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+

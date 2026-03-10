@@ -47,6 +47,7 @@ class Task extends Model
         'planned_end' => 'plannedEnd',
         'created_at' => 'createdAt',
         'updated_at' => 'updatedAt',
+        'is_schedule_block' => 'isScheduleBlock',
     ];
 
     // Initialize typed properties with safe defaults to avoid uninitialized property errors
@@ -54,7 +55,7 @@ class Task extends Model
     /**
      * Task ID.
      */
-    protected int $id = 0;
+    protected ?int $id = null;
 
     /**
      * Task title.
@@ -132,6 +133,11 @@ class Task extends Model
     protected string $updatedAt = '';
 
     /**
+     * Whether this task is an abstract schedule block (1) and should not be scheduled directly.
+     */
+    protected int $isScheduleBlock = 0;
+
+    /**
      * Constructor to initialize a Task instance.
      *
      * @param array $data Initial data for the task.
@@ -152,10 +158,10 @@ class Task extends Model
 
     public function getId(): int
     {
-        return $this->id;
+        return $this->id ?? 0;
     }
 
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -423,6 +429,25 @@ class Task extends Model
     }
 
     /**
+     * Get isScheduleBlock (0 or 1)
+     */
+    public function getIsScheduleBlock(): int
+    {
+        return $this->isScheduleBlock;
+    }
+
+    /**
+     * Set isScheduleBlock (0 or 1)
+     */
+    public function setIsScheduleBlock(int $isScheduleBlock): void
+    {
+        if (!in_array($isScheduleBlock, [0, 1], true)) {
+            throw new InvalidArgumentException('isScheduleBlock must be 0 or 1');
+        }
+        $this->isScheduleBlock = $isScheduleBlock;
+    }
+
+    /**
      * Specif3y data which should be serialized to JSON.
      *
      * @return array
@@ -447,6 +472,7 @@ class Task extends Model
             'parentId' => $this->parentId,
             // category must always be present as an object or null (only id, name, color)
             'category' => null,
+            'isScheduleBlock' => $this->isScheduleBlock,
         ];
 
         if ($this->categoryId !== null) {

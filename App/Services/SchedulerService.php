@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Task;
+use App\Models\Category;
 use InvalidArgumentException;
 
 
@@ -210,5 +211,120 @@ class SchedulerService
         $time = date('Y-m-d H:i:s');
 
         @file_put_contents($file, "[$time] " . $line . PHP_EOL, FILE_APPEND | LOCK_EX);
+    }
+
+    public function splitTaskByCategory(Task $task): void
+    {
+        // Debug log start
+        $this->log("splitTaskByCategory invoked for task=" . $task->getId() . " parentId=" . ($task->getParentId() ?? 'null') . " categoryId=" . ($task->getCategoryId() ?? 'null') . " timeToComplete=" . ($task->getTimeToComplete() ?? 'null') . " atomic=" . $task->getAtomicTask());
+
+        if ($task->getParentId() !== null) {
+            $this->log("Skipping split: task is already a child (parent_id set)");
+            return;
+        }
+
+        if ($task->getCategoryId() === null) {
+            $this->log("Skipping split: task has no category");
+            return;
+        }
+
+        if ($task->getAtomicTask() === 1) {
+            $this->log("Skipping split: task is atomic");
+            return;
+        }
+
+        $totalMinutes = $task->getTimeToComplete();
+        if ($totalMinutes === null || $totalMinutes <= 0) {
+            $this->log("Skipping split: invalid or missing timeToComplete (" . var_export($totalMinutes, true) . ")");
+            return;
+        }
+
+
+        $category = Category::getOne($task->getCategoryId());
+        if (!$category) {
+            $this->log("Skipping split: category record not found id=" . $task->getCategoryId());
+            return;
+        }
+
+        $max = $category->getMaxDuration();
+        if ($max === null || $max <= 0) {
+            // Fallback: if DB doesn't have max_duration column or value, use sensible default
+            $this->log("Category maxDuration invalid (" . var_export($max, true) . ") — using fallback 60 minutes");
+            $max = 60;
+        }
+
+        if ($max >= $totalMinutes) {
+            $this->log("Skipping split: category maxDuration (" . $max . ") >= totalMinutes (" . $totalMinutes . ")");
+            return;
+        }
+
+
+        try {
+            $task->save();
+        } catch (\Exception $e) {
+            $this->log("Failed saving parent task before split: " . $task->getId());
+            return;
+        }
+
+        $parentId = $task->getId();
+
+        // Build chunks (max-sized parts, last one may be smaller)
+        $fullParts = intdiv($totalMinutes, $max);
+        $remainder = $totalMinutes % $max;
+
+        $chunks = [];
+        for ($i = 0; $i < $fullParts; $i++) {
+            $chunks[] = $max;
+        }
+        if ($remainder > 0) {
+            $chunks[] = $remainder;
+        }
+
+        // Create child tasks
+        $index = 1;
+        foreach ($chunks as $chunkMinutes) {
+            $child = new Task();
+            // Copy basic attributes
+            $child->setTitle($task->getTitle() . ' - part ' . $index);
+            $child->setDescription($task->getDescription());
+            $child->setStatus($task->getStatus());
+            $child->setPriority($task->getPriority());
+            // Assign child tasks to the same user as the parent so the owner keeps their parts
+            // (the project doesn't use team members in this setup).
+            $child->setUserId($task->getUserId());
+            $child->setDeadline($task->getDeadline());
+            $child->setCategoryId($task->getCategoryId());
+            $child->setParentId($parentId);
+            $child->setTimeToComplete($chunkMinutes);
+            // children are not atomic by default
+            $child->setAtomicTask(0);
+            // preserve dynamic flag
+            $child->setIsDynamic($task->getIsDynamic());
+            $child->setPlannedStart(null);
+            $child->setPlannedEnd(null);
+            $child->setIsScheduleBlock(0);
+            // Ensure created_at/updated_at are set (DB columns are NOT NULL) to avoid '' datetime insertion
+            $now = date('Y-m-d H:i:s');
+            $child->setCreatedAt($now);
+            $child->setUpdatedAt($now);
+
+            try {
+                $child->save();
+            } catch (\Exception $e) {
+                $this->log("Failed creating child task for parent={$parentId}: " . $e->getMessage());
+                // continue trying to create other parts
+            }
+
+            $index++;
+        }
+
+        // Mark original as abstract schedule block and clear its time to avoid duplication
+        $task->setIsScheduleBlock(1);
+        $task->setTimeToComplete(null);
+        try {
+            $task->save();
+        } catch (\Exception $e) {
+            $this->log("Failed marking parent task as schedule block id={$parentId}: " . $e->getMessage());
+        }
     }
 }
