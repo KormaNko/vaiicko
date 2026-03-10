@@ -105,20 +105,69 @@ class SchedulerService
 
             $slotsNeeded = (int)ceil($minutes / $this->slotMinutes);
 
+            // per-task window preference: try category plan window first
+            $useWindowFallback = true; // whether to try category window first
             while ($slotsNeeded > 0) {
 
-                $dayStart = strtotime($this->combine($currentDate, $this->workStart));
-                $dayEnd = strtotime($this->combine($currentDate, $this->workEnd));
+                // compute work-day bounds
+                $workDayStart = strtotime($this->combine($currentDate, $this->workStart));
+                $workDayEnd = strtotime($this->combine($currentDate, $this->workEnd));
+
+                // default to work hours
+                $dayStart = $workDayStart;
+                $dayEnd = $workDayEnd;
+
+                // If category provides a preferred plan window, cap it to work hours and use that window
+                $categoryWindowStart = null;
+                $categoryWindowEnd = null;
+                if ($task->getCategoryId() !== null && $useWindowFallback) {
+                    try {
+                        $cat = Category::getOne($task->getCategoryId());
+                        if ($cat && $cat->getPlanFrom() !== null && $cat->getPlanTo() !== null) {
+                            $pf = $cat->getPlanFrom();
+                            $pt = $cat->getPlanTo();
+                            $tsPf = strtotime($this->combine($currentDate, $pf));
+                            $tsPt = strtotime($this->combine($currentDate, $pt));
+                            if ($tsPf !== false && $tsPt !== false && $tsPt > $tsPf) {
+                                // cap category window to work hours (strict day enforcement)
+                                $categoryWindowStart = max($workDayStart, $tsPf);
+                                $categoryWindowEnd = min($workDayEnd, $tsPt);
+                                // if after capping the window is invalid, ignore it
+                                if ($categoryWindowEnd <= $categoryWindowStart) {
+                                    $categoryWindowStart = null;
+                                    $categoryWindowEnd = null;
+                                }
+                            }
+                        }
+                    } catch (\Throwable $e) {
+                        // if category lookup fails, ignore and fall back to normal hours
+                        $categoryWindowStart = null;
+                        $categoryWindowEnd = null;
+                    }
+                }
+
+                if ($categoryWindowStart !== null && $categoryWindowEnd !== null) {
+                    $dayStart = $categoryWindowStart;
+                    $dayEnd = $categoryWindowEnd;
+                }
 
                 $now = strtotime($this->combine($currentDate, $currentTime));
 
-
                 $now = $this->roundToSlot($now);
+
+                // If we're trying to schedule inside a category window but current time is before it, jump to window start
+                if (isset($categoryWindowStart) && $categoryWindowStart !== null && $now < $categoryWindowStart) {
+                    $now = $categoryWindowStart;
+                }
 
                 if ($now >= $dayEnd) {
 
                     $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
                     $currentTime = $this->workStart;
+                    // if we just tried the category window and failed for the day, fall back to normal hours
+                    if ($categoryWindowStart !== null && $useWindowFallback) {
+                        $useWindowFallback = false;
+                    }
                     continue;
                 }
 
@@ -136,6 +185,22 @@ class SchedulerService
 
                     if ($taskStart < $block['end'] && $taskEnd > $block['start']) {
 
+                        // If the blocking interval ends at or after the day's allowed end,
+                        // we should advance to the next day instead of setting currentTime
+                        // to a time beyond dayEnd which could allow scheduling after work hours.
+                        if ($block['end'] >= $dayEnd) {
+                            // advance to next day and reset to workStart (or window fallback will adjust)
+                            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+                            $currentTime = $this->workStart;
+                            // if we were trying category window, fall back after this day
+                            if ($categoryWindowStart !== null && $useWindowFallback) {
+                                $useWindowFallback = false;
+                            }
+                            $collision = true;
+                            break;
+                        }
+
+                        // otherwise move the cursor to the end of the blocking interval
                         $currentTime = date('H:i:s', $block['end']);
                         $collision = true;
                         break;
@@ -215,8 +280,7 @@ class SchedulerService
 
     public function splitTaskByCategory(Task $task): void
     {
-        // Debug log start
-        $this->log("splitTaskByCategory invoked for task=" . $task->getId() . " parentId=" . ($task->getParentId() ?? 'null') . " categoryId=" . ($task->getCategoryId() ?? 'null') . " timeToComplete=" . ($task->getTimeToComplete() ?? 'null') . " atomic=" . $task->getAtomicTask());
+        // splitTaskByCategory: creates child tasks when category max_duration < task duration
 
         if ($task->getParentId() !== null) {
             $this->log("Skipping split: task is already a child (parent_id set)");

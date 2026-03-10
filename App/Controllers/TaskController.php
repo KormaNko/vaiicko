@@ -12,8 +12,7 @@ use Framework\Http\Request;
 use Framework\Http\Responses\JsonResponse;
 use Framework\Http\Responses\Response;
 use App\Services\SchedulerService;
-use Framework\DB\Connection;
-//bezne som si tu pomahal s ai aj genrtovali casti kododv
+// cleaned temporary debug imports/comments
 /**
  * Class TaskController
  *
@@ -330,55 +329,8 @@ class TaskController extends AppController
             return $this->json(['error' => 'Failed to save task', 'message' => $e->getMessage()], 500);
         }
 
-        // Ensure we operate on the DB-persisted task object with its real primary key.
-        // Some models initialize the PK property (e.g. protected int $id = 0) which prevents
-        // the model instance from being updated with lastInsertId() by the framework save().
-        // To avoid changing framework, read PDO lastInsertId and reload the task from DB.
-        try {
-            $lastId = null;
-            try {
-                $lastId = Connection::getInstance()->lastInsertId();
-            } catch (\Throwable $__e) {
-                $lastId = null;
-            }
-
-            if ($lastId !== null && $lastId !== '' && is_numeric($lastId) && (int)$lastId > 0) {
-                $reloaded = Task::getOne((int)$lastId);
-                if ($reloaded !== null) {
-                    $task = $reloaded;
-                }
-            } else {
-                // fallback strategy (robust):
-                // 1) try to find any task for this user created in the last 5 seconds (most likely ours)
-                // 2) fallback to most recent task for this user with the same title
-                $maybeUserId = $this->user->getIdentity()->getId();
-                $maybeTitle = $task->getTitle();
-
-                $recentFrom = date('Y-m-d H:i:s', time() - 5);
-                $candidates = Task::getAll(
-                    'user_id = ? AND created_at >= ?',
-                    [$maybeUserId, $recentFrom],
-                    'id DESC',
-                    1
-                );
-                if (is_array($candidates) && count($candidates) > 0) {
-                    $task = $candidates[0];
-                } else {
-                    // fallback: most recent matching user+title
-                    $candidates = Task::getAll(
-                        'user_id = ? AND title = ?',
-                        [$maybeUserId, $maybeTitle],
-                        'id DESC',
-                        1
-                    );
-                    if (is_array($candidates) && count($candidates) > 0) {
-                        $task = $candidates[0];
-                    }
-                }
-            }
-        } catch (\Throwable $__e) {
-            // ignore reload failures — scheduler will skip if parent id is invalid
-        }
+        // rely on the saved $task instance having the DB id set by the model.
+        // (temporary reload/fallback logic removed)
 
         // log that we're about to run scheduler (best-effort)
         try {

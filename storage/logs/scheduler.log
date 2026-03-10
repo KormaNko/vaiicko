@@ -2,3 +2,23 @@
 [2026-03-10 15:01:32] splitTaskByCategory invoked for task=180 parentId=null categoryId=38 timeToComplete=80 atomic=0
 [2026-03-10 15:01:32] Scheduler run for user=5
 [2026-03-10 15:01:32] Scheduler finished for user=5
+[2026-03-10 15:03:21] Controller triggering scheduler for user=5
+[2026-03-10 15:03:21] splitTaskByCategory invoked for task=185 parentId=null categoryId=38 timeToComplete=200 atomic=0
+[2026-03-10 15:03:21] Scheduler run for user=5
+[2026-03-10 15:03:21] Scheduler finished for user=5
+[2026-03-10 16:36:29] Controller triggering scheduler for user=5
+[2026-03-10 16:36:29] Scheduler run for user=5
+[2026-03-10 16:36:29] Scheduler finished for user=5
+[2026-03-10 16:36:59] Controller triggering scheduler for user=5
+[2026-03-10 16:36:59] Scheduler run for user=5
+[2026-03-10 16:36:59] Scheduler finished for user=5
+[2026-03-10 16:38:43] Controller triggering scheduler for user=5
+[2026-03-10 16:38:43] Skipping split: task is atomic
+[2026-03-10 16:38:43] Scheduler run for user=5
+[2026-03-10 16:38:43] Scheduler finished for user=5
+[2026-03-10 16:40:04] Controller triggering scheduler for user=5
+[2026-03-10 16:40:04] Scheduler run for user=5
+[2026-03-10 16:40:04] Scheduler finished for user=5
+[2026-03-10 16:45:33] Controller triggering scheduler for user=5
+[2026-03-10 16:45:33] Scheduler run for user=5
+[2026-03-10 16:45:33] Scheduler finished for user=5
