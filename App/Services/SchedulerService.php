@@ -31,7 +31,6 @@ class SchedulerService
 
     public function recalculateForUser(int $userId): void
     {
-        $this->log("Scheduler run for user={$userId}");
 
 
         $toClear = Task::getAll(
@@ -105,19 +104,19 @@ class SchedulerService
 
             $slotsNeeded = (int)ceil($minutes / $this->slotMinutes);
 
-            // per-task window preference: try category plan window first
-            $useWindowFallback = true; // whether to try category window first
+
+            $useWindowFallback = true;
             while ($slotsNeeded > 0) {
 
-                // compute work-day bounds
+
                 $workDayStart = strtotime($this->combine($currentDate, $this->workStart));
                 $workDayEnd = strtotime($this->combine($currentDate, $this->workEnd));
 
-                // default to work hours
+
                 $dayStart = $workDayStart;
                 $dayEnd = $workDayEnd;
 
-                // If category provides a preferred plan window, cap it to work hours and use that window
+
                 $categoryWindowStart = null;
                 $categoryWindowEnd = null;
                 if ($task->getCategoryId() !== null && $useWindowFallback) {
@@ -129,10 +128,10 @@ class SchedulerService
                             $tsPf = strtotime($this->combine($currentDate, $pf));
                             $tsPt = strtotime($this->combine($currentDate, $pt));
                             if ($tsPf !== false && $tsPt !== false && $tsPt > $tsPf) {
-                                // cap category window to work hours (strict day enforcement)
+
                                 $categoryWindowStart = max($workDayStart, $tsPf);
                                 $categoryWindowEnd = min($workDayEnd, $tsPt);
-                                // if after capping the window is invalid, ignore it
+
                                 if ($categoryWindowEnd <= $categoryWindowStart) {
                                     $categoryWindowStart = null;
                                     $categoryWindowEnd = null;
@@ -140,7 +139,7 @@ class SchedulerService
                             }
                         }
                     } catch (\Throwable $e) {
-                        // if category lookup fails, ignore and fall back to normal hours
+
                         $categoryWindowStart = null;
                         $categoryWindowEnd = null;
                     }
@@ -155,7 +154,7 @@ class SchedulerService
 
                 $now = $this->roundToSlot($now);
 
-                // If we're trying to schedule inside a category window but current time is before it, jump to window start
+
                 if (isset($categoryWindowStart) && $categoryWindowStart !== null && $now < $categoryWindowStart) {
                     $now = $categoryWindowStart;
                 }
@@ -164,7 +163,7 @@ class SchedulerService
 
                     $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
                     $currentTime = $this->workStart;
-                    // if we just tried the category window and failed for the day, fall back to normal hours
+                    //pre pripad ak sme skusali pouzit category window, ale tento den uz nebol vhodny, tak nech to skusi znova na dalsom dni, ale bez okna
                     if ($categoryWindowStart !== null && $useWindowFallback) {
                         $useWindowFallback = false;
                     }
@@ -184,15 +183,11 @@ class SchedulerService
                 foreach ($occupied as $block) {
 
                     if ($taskStart < $block['end'] && $taskEnd > $block['start']) {
-
-                        // If the blocking interval ends at or after the day's allowed end,
-                        // we should advance to the next day instead of setting currentTime
-                        // to a time beyond dayEnd which could allow scheduling after work hours.
                         if ($block['end'] >= $dayEnd) {
-                            // advance to next day and reset to workStart (or window fallback will adjust)
+
                             $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
                             $currentTime = $this->workStart;
-                            // if we were trying category window, fall back after this day
+
                             if ($categoryWindowStart !== null && $useWindowFallback) {
                                 $useWindowFallback = false;
                             }
@@ -200,7 +195,23 @@ class SchedulerService
                             break;
                         }
 
-                        // otherwise move the cursor to the end of the blocking interval
+                        //if ($taskStart < $block['end'] && $taskEnd > $block['start']) {
+                        //    if ($categoryWindowStart !== null && $useWindowFallback) {
+                        //        $useWindowFallback = false; // okamžite vypni window, skúšaj celý deň
+                        //    }
+                        //
+                        //    // posuň currentTime na koniec kolidujúceho bloku
+                        //    $currentTime = date('H:i:s', $block['end']);
+                        //    $collision = true;
+                        //    break;
+                        //}
+                        //
+                        //// potom klasicky: ak currentTime >= dayEnd, presuň deň
+                        //if (strtotime($currentTime) >= $dayEnd) {
+                        //    $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+                        //    $currentTime = $this->workStart;
+                        //}
+
                         $currentTime = date('H:i:s', $block['end']);
                         $collision = true;
                         break;
@@ -280,7 +291,7 @@ class SchedulerService
 
     public function splitTaskByCategory(Task $task): void
     {
-        // splitTaskByCategory: creates child tasks when category max_duration < task duration
+
 
         if ($task->getParentId() !== null) {
             $this->log("Skipping split: task is already a child (parent_id set)");
@@ -312,7 +323,6 @@ class SchedulerService
 
         $max = $category->getMaxDuration();
         if ($max === null || $max <= 0) {
-            // Fallback: if DB doesn't have max_duration column or value, use sensible default
             $this->log("Category maxDuration invalid (" . var_export($max, true) . ") — using fallback 60 minutes");
             $max = 60;
         }
@@ -332,7 +342,6 @@ class SchedulerService
 
         $parentId = $task->getId();
 
-        // Build chunks (max-sized parts, last one may be smaller)
         $fullParts = intdiv($totalMinutes, $max);
         $remainder = $totalMinutes % $max;
 
@@ -344,30 +353,24 @@ class SchedulerService
             $chunks[] = $remainder;
         }
 
-        // Create child tasks
         $index = 1;
         foreach ($chunks as $chunkMinutes) {
             $child = new Task();
-            // Copy basic attributes
             $child->setTitle($task->getTitle() . ' - part ' . $index);
             $child->setDescription($task->getDescription());
             $child->setStatus($task->getStatus());
             $child->setPriority($task->getPriority());
-            // Assign child tasks to the same user as the parent so the owner keeps their parts
-            // (the project doesn't use team members in this setup).
+
             $child->setUserId($task->getUserId());
             $child->setDeadline($task->getDeadline());
             $child->setCategoryId($task->getCategoryId());
             $child->setParentId($parentId);
             $child->setTimeToComplete($chunkMinutes);
-            // children are not atomic by default
             $child->setAtomicTask(0);
-            // preserve dynamic flag
             $child->setIsDynamic($task->getIsDynamic());
             $child->setPlannedStart(null);
             $child->setPlannedEnd(null);
             $child->setIsScheduleBlock(0);
-            // Ensure created_at/updated_at are set (DB columns are NOT NULL) to avoid '' datetime insertion
             $now = date('Y-m-d H:i:s');
             $child->setCreatedAt($now);
             $child->setUpdatedAt($now);
@@ -376,13 +379,11 @@ class SchedulerService
                 $child->save();
             } catch (\Exception $e) {
                 $this->log("Failed creating child task for parent={$parentId}: " . $e->getMessage());
-                // continue trying to create other parts
             }
 
             $index++;
         }
 
-        // Mark original as abstract schedule block and clear its time to avoid duplication
         $task->setIsScheduleBlock(1);
         $task->setTimeToComplete(null);
         try {
