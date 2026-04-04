@@ -343,7 +343,7 @@ class SchedulerService
             $child->setCategoryId($task->getCategoryId());
             $child->setParentId($parentId);
             $child->setTimeToComplete($chunkMinutes);
-            $child->setAtomicTask(0);
+            $child->setAtomicTask(1);
             $child->setIsDynamic($task->getIsDynamic());
             $child->setPlannedStart(null);
             $child->setPlannedEnd(null);

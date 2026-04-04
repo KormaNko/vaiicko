@@ -31,8 +31,6 @@ class SchedulerService
 
     public function recalculateForUser(int $userId): void
     {
-
-
         $toClear = Task::getAll(
             "user_id = ? AND is_dynamic = 1 AND status != 'completed'",
             [$userId]
@@ -40,7 +38,6 @@ class SchedulerService
 
         if (is_array($toClear)) {
             foreach ($toClear as $task) {
-
                 $task->setPlannedStart(null);
                 $task->setPlannedEnd(null);
 
@@ -52,7 +49,6 @@ class SchedulerService
             }
         }
 
-
         $existing = Task::getAll(
             "user_id = ? AND planned_start IS NOT NULL AND status != 'completed'",
             [$userId]
@@ -62,7 +58,6 @@ class SchedulerService
 
         if (is_array($existing)) {
             foreach ($existing as $task) {
-
                 $start = $task->getPlannedStart();
                 $end = $task->getPlannedEnd();
 
@@ -79,7 +74,6 @@ class SchedulerService
 
         usort($occupied, fn($a, $b) => $a['start'] <=> $b['start']);
 
-
         $tasks = Task::getAll(
             "user_id = ? AND is_dynamic = 1 AND planned_start IS NULL AND status != 'completed'",
             [$userId],
@@ -91,44 +85,35 @@ class SchedulerService
         }
 
         $currentDate = date('Y-m-d');
-        $currentTime = $this->workStart;
 
         foreach ($tasks as $task) {
-
             $minutes = $task->getTimeToComplete();
 
             if ($minutes === null || $minutes <= 0) {
                 continue;
             }
 
+            $slotsNeeded = (int) ceil($minutes / $this->slotMinutes);
+            $requiredSeconds = $slotsNeeded * $this->slotMinutes * 60;
 
-            $slotsNeeded = (int)ceil($minutes / $this->slotMinutes);
-
-
-            $useWindowFallback = true;
-            while ($slotsNeeded > 0) {
-
-
+            while (true) {
                 $workDayStart = strtotime($this->combine($currentDate, $this->workStart));
                 $workDayEnd = strtotime($this->combine($currentDate, $this->workEnd));
 
-
-                $dayStart = $workDayStart;
-                $dayEnd = $workDayEnd;
-
-
                 $categoryWindowStart = null;
                 $categoryWindowEnd = null;
-                if ($task->getCategoryId() !== null && $useWindowFallback) {
+
+                if ($task->getCategoryId() !== null) {
                     try {
                         $cat = Category::getOne($task->getCategoryId());
                         if ($cat && $cat->getPlanFrom() !== null && $cat->getPlanTo() !== null) {
                             $pf = $cat->getPlanFrom();
                             $pt = $cat->getPlanTo();
+
                             $tsPf = strtotime($this->combine($currentDate, $pf));
                             $tsPt = strtotime($this->combine($currentDate, $pt));
-                            if ($tsPf !== false && $tsPt !== false && $tsPt > $tsPf) {
 
+                            if ($tsPf !== false && $tsPt !== false && $tsPt > $tsPf) {
                                 $categoryWindowStart = max($workDayStart, $tsPf);
                                 $categoryWindowEnd = min($workDayEnd, $tsPt);
 
@@ -139,184 +124,104 @@ class SchedulerService
                             }
                         }
                     } catch (\Throwable $e) {
-
                         $categoryWindowStart = null;
                         $categoryWindowEnd = null;
                     }
                 }
 
+                $rangesToTry = [];
+
                 if ($categoryWindowStart !== null && $categoryWindowEnd !== null) {
-                    $dayStart = $categoryWindowStart;
-                    $dayEnd = $categoryWindowEnd;
+                    $rangesToTry[] = [
+                        'start' => $categoryWindowStart,
+                        'end' => $categoryWindowEnd
+                    ];
                 }
 
-                $now = strtotime($this->combine($currentDate, $currentTime));
-
-                $now = $this->roundToSlot($now);
-
-
-                if (isset($categoryWindowStart) && $categoryWindowStart !== null && $now < $categoryWindowStart) {
-                    $now = $categoryWindowStart;
-                }
-
-                if ($now >= $dayEnd) {
-
-                    $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
-                    $currentTime = $this->workStart;
-                    //pre pripad ak sme skusali pouzit category window, ale tento den uz nebol vhodny, tak nech to skusi znova na dalsom dni, ale bez okna
-                    if ($categoryWindowStart !== null && $useWindowFallback) {
-                        $useWindowFallback = false;
-                    }
-                    continue;
-                }
-
-                $taskStart = $now;
-                $taskEnd = $taskStart + ($slotsNeeded * $this->slotMinutes * 60);
-
-                if ($taskEnd > $dayEnd) {
-                    $taskEnd = $dayEnd;
-                }
-
-
-                $collision = false;
-
-                foreach ($occupied as $block) {
-
-                    if ($taskStart < $block['end'] && $taskEnd > $block['start']) {
-                        if ($block['end'] >= $dayEnd) {
-
-                            // Instead of immediately giving up on this day, try to find an earlier free gap
-                            // within [dayStart, dayEnd) where we can place at least part of the task.
-                            $requiredSeconds = $slotsNeeded * $this->slotMinutes * 60;
-                            // Single chunk cannot exceed the working window length
-                            $desiredLength = min($requiredSeconds, $dayEnd - $dayStart);
-
-                            // Build list of occupied blocks clipped to current day and sorted
-                            $dayBlocks = [];
-                            foreach ($occupied as $b) {
-                                $s = max($b['start'], $dayStart);
-                                $e = min($b['end'], $dayEnd);
-                                if ($e > $s) {
-                                    $dayBlocks[] = ['start' => $s, 'end' => $e];
-                                }
-                            }
-                            usort($dayBlocks, fn($a, $b) => $a['start'] <=> $b['start']);
-
-                            // Build gaps between dayStart..dayEnd using dayBlocks
-                            $gaps = [];
-                            $cursor = $dayStart;
-                            foreach ($dayBlocks as $db) {
-                                if ($db['start'] > $cursor) {
-                                    $gaps[] = ['start' => $cursor, 'end' => $db['start']];
-                                }
-                                $cursor = max($cursor, $db['end']);
-                            }
-                            if ($cursor < $dayEnd) {
-                                $gaps[] = ['start' => $cursor, 'end' => $dayEnd];
-                            }
-
-                            // Try to find earliest gap that can fit at least some portion of desiredLength
-                            $found = false;
-                            foreach ($gaps as $gap) {
-                                // skip gaps that end before our current candidate time
-                                if ($gap['end'] <= $taskStart) {
-                                    continue;
-                                }
-
-                                $candidateStart = max($taskStart, $gap['start']);
-                                // align to slot boundary
-                                $candidateStart = $this->roundToSlot($candidateStart);
-
-                                if ($candidateStart >= $gap['end']) {
-                                    continue;
-                                }
-
-                                $maxPossible = $gap['end'] - $candidateStart;
-                                if ($maxPossible <= 0) {
-                                    continue;
-                                }
-
-                                // We'll schedule up to desiredLength or as much as gap allows
-                                $scheduledLength = min($desiredLength, $maxPossible);
-
-                                $taskStart = $candidateStart;
-                                $taskEnd = $taskStart + $scheduledLength;
-
-                                // schedule this partial chunk
-                                $task->setPlannedStart(date('Y-m-d H:i:s', $taskStart));
-                                $task->setPlannedEnd(date('Y-m-d H:i:s', $taskEnd));
-
-                                try {
-                                    $task->save();
-                                } catch (\Exception $e) {
-                                    $this->log("Failed scheduling task " . $task->getId());
-                                }
-
-                                $occupied[] = [
-                                    'start' => $taskStart,
-                                    'end' => $taskEnd
-                                ];
-                                usort($occupied, fn($a, $b) => $a['start'] <=> $b['start']);
-
-                                $slotsUsed = ($taskEnd - $taskStart) / ($this->slotMinutes * 60);
-                                $slotsNeeded -= $slotsUsed;
-
-                                $currentTime = date('H:i:s', $taskEnd);
-
-                                $found = true;
-                                break;
-                            }
-
-                            if ($found) {
-                                $collision = true; // already handled by scheduling into a gap
-                                break;
-                            }
-
-                            // nothing fits -> fallback to next day (original behaviour)
-                            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
-                            $currentTime = $this->workStart;
-
-                            if ($categoryWindowStart !== null && $useWindowFallback) {
-                                $useWindowFallback = false;
-                            }
-                            $collision = true;
-                            break;
-                        }
-
-
-                        $currentTime = date('H:i:s', $block['end']);
-                        $collision = true;
-                        break;
-                    }
-                }
-
-                if ($collision) {
-                    continue;
-                }
-
-
-                $task->setPlannedStart(date('Y-m-d H:i:s', $taskStart));
-                $task->setPlannedEnd(date('Y-m-d H:i:s', $taskEnd));
-
-                try {
-                    $task->save();
-                } catch (\Exception $e) {
-                    $this->log("Failed scheduling task " . $task->getId());
-                }
-
-
-                $occupied[] = [
-                    'start' => $taskStart,
-                    'end' => $taskEnd
+                $rangesToTry[] = [
+                    'start' => $workDayStart,
+                    'end' => $workDayEnd
                 ];
 
-                usort($occupied, fn($a, $b) => $a['start'] <=> $b['start']);
+                $scheduled = false;
 
+                foreach ($rangesToTry as $range) {
+                    $rangeStart = $range['start'];
+                    $rangeEnd = $range['end'];
 
-                $slotsUsed = ($taskEnd - $taskStart) / ($this->slotMinutes * 60);
-                $slotsNeeded -= $slotsUsed;
+                    $dayBlocks = [];
+                    foreach ($occupied as $block) {
+                        $s = max($block['start'], $rangeStart);
+                        $e = min($block['end'], $rangeEnd);
 
-                $currentTime = date('H:i:s', $taskEnd);
+                        if ($e > $s) {
+                            $dayBlocks[] = [
+                                'start' => $s,
+                                'end' => $e
+                            ];
+                        }
+                    }
+
+                    usort($dayBlocks, fn($a, $b) => $a['start'] <=> $b['start']);
+
+                    $gaps = [];
+                    $cursor = $rangeStart;
+
+                    foreach ($dayBlocks as $block) {
+                        if ($block['start'] > $cursor) {
+                            $gaps[] = [
+                                'start' => $cursor,
+                                'end' => $block['start']
+                            ];
+                        }
+
+                        $cursor = max($cursor, $block['end']);
+                    }
+
+                    if ($cursor < $rangeEnd) {
+                        $gaps[] = [
+                            'start' => $cursor,
+                            'end' => $rangeEnd
+                        ];
+                    }
+
+                    foreach ($gaps as $gap) {
+                        $taskStart = $this->roundToSlot($gap['start']);
+
+                        if ($taskStart >= $gap['end']) {
+                            continue;
+                        }
+
+                        $taskEnd = $taskStart + $requiredSeconds;
+
+                        if ($taskEnd <= $gap['end']) {
+                            $task->setPlannedStart(date('Y-m-d H:i:s', $taskStart));
+                            $task->setPlannedEnd(date('Y-m-d H:i:s', $taskEnd));
+
+                            try {
+                                $task->save();
+                            } catch (\Exception $e) {
+                                $this->log("Failed scheduling task " . $task->getId());
+                            }
+
+                            $occupied[] = [
+                                'start' => $taskStart,
+                                'end' => $taskEnd
+                            ];
+
+                            usort($occupied, fn($a, $b) => $a['start'] <=> $b['start']);
+
+                            $scheduled = true;
+                            break 2;
+                        }
+                    }
+                }
+
+                if ($scheduled) {
+                    break;
+                }
+
+                $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
             }
         }
 
@@ -438,7 +343,7 @@ class SchedulerService
             $child->setCategoryId($task->getCategoryId());
             $child->setParentId($parentId);
             $child->setTimeToComplete($chunkMinutes);
-            $child->setAtomicTask(0);
+            $child->setAtomicTask(1);
             $child->setIsDynamic($task->getIsDynamic());
             $child->setPlannedStart(null);
             $child->setPlannedEnd(null);

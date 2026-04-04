@@ -1,0 +1,185 @@
+public function recalculateForUser(int $userId): void
+{
+    $toClear = Task::getAll(
+        "user_id = ? AND is_dynamic = 1 AND status != 'completed'",
+        [$userId]
+    );
+
+    if (is_array($toClear)) {
+        foreach ($toClear as $task) {
+            $task->setPlannedStart(null);
+            $task->setPlannedEnd(null);
+
+            try {
+                $task->save();
+            } catch (\Exception $e) {
+                $this->log("Failed clearing task " . $task->getId());
+            }
+        }
+    }
+
+    $existing = Task::getAll(
+        "user_id = ? AND planned_start IS NOT NULL AND status != 'completed'",
+        [$userId]
+    );
+
+    $occupied = [];
+
+    if (is_array($existing)) {
+        foreach ($existing as $task) {
+            $start = $task->getPlannedStart();
+            $end = $task->getPlannedEnd();
+
+            if (!$start || !$end) {
+                continue;
+            }
+
+            $occupied[] = [
+                'start' => strtotime($start),
+                'end' => strtotime($end)
+            ];
+        }
+    }
+
+    usort($occupied, fn($a, $b) => $a['start'] <=> $b['start']);
+
+    $tasks = Task::getAll(
+        "user_id = ? AND is_dynamic = 1 AND planned_start IS NULL AND status != 'completed'",
+        [$userId],
+        "deadline ASC, priority DESC"
+    );
+
+    if (!is_array($tasks)) {
+        return;
+    }
+
+    $currentDate = date('Y-m-d');
+
+    foreach ($tasks as $task) {
+        $minutes = $task->getTimeToComplete();
+
+        if ($minutes === null || $minutes <= 0) {
+            continue;
+        }
+
+        $slotsNeeded = (int) ceil($minutes / $this->slotMinutes);
+        $requiredSeconds = $slotsNeeded * $this->slotMinutes * 60;
+
+        while (true) {
+            $workDayStart = strtotime($this->combine($currentDate, $this->workStart));
+            $workDayEnd = strtotime($this->combine($currentDate, $this->workEnd));
+
+            $rangeStart = $workDayStart;
+            $rangeEnd = $workDayEnd;
+            $hasStrictCategoryWindow = false;
+
+            if ($task->getCategoryId() !== null) {
+                try {
+                    $cat = Category::getOne($task->getCategoryId());
+
+                    if ($cat && $cat->getPlanFrom() !== null && $cat->getPlanTo() !== null) {
+                        $pf = $cat->getPlanFrom();
+                        $pt = $cat->getPlanTo();
+
+                        $tsPf = strtotime($this->combine($currentDate, $pf));
+                        $tsPt = strtotime($this->combine($currentDate, $pt));
+
+                        if ($tsPf !== false && $tsPt !== false && $tsPt > $tsPf) {
+                            $rangeStart = max($workDayStart, $tsPf);
+                            $rangeEnd = min($workDayEnd, $tsPt);
+                            $hasStrictCategoryWindow = true;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    $this->log("Category window read failed for task " . $task->getId());
+                }
+            }
+
+            if ($rangeEnd <= $rangeStart) {
+                $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+                continue;
+            }
+
+            $dayBlocks = [];
+            foreach ($occupied as $block) {
+                $s = max($block['start'], $rangeStart);
+                $e = min($block['end'], $rangeEnd);
+
+                if ($e > $s) {
+                    $dayBlocks[] = [
+                        'start' => $s,
+                        'end' => $e
+                    ];
+                }
+            }
+
+            usort($dayBlocks, fn($a, $b) => $a['start'] <=> $b['start']);
+
+            $gaps = [];
+            $cursor = $rangeStart;
+
+            foreach ($dayBlocks as $block) {
+                if ($block['start'] > $cursor) {
+                    $gaps[] = [
+                        'start' => $cursor,
+                        'end' => $block['start']
+                    ];
+                }
+
+                $cursor = max($cursor, $block['end']);
+            }
+
+            if ($cursor < $rangeEnd) {
+                $gaps[] = [
+                    'start' => $cursor,
+                    'end' => $rangeEnd
+                ];
+            }
+
+            $scheduled = false;
+
+            foreach ($gaps as $gap) {
+                $taskStart = $this->roundToSlot($gap['start']);
+
+                if ($taskStart >= $gap['end']) {
+                    continue;
+                }
+
+                $taskEnd = $taskStart + $requiredSeconds;
+
+                if ($taskEnd <= $gap['end']) {
+                    $task->setPlannedStart(date('Y-m-d H:i:s', $taskStart));
+                    $task->setPlannedEnd(date('Y-m-d H:i:s', $taskEnd));
+
+                    try {
+                        $task->save();
+                    } catch (\Exception $e) {
+                        $this->log("Failed scheduling task " . $task->getId());
+                    }
+
+                    $occupied[] = [
+                        'start' => $taskStart,
+                        'end' => $taskEnd
+                    ];
+
+                    usort($occupied, fn($a, $b) => $a['start'] <=> $b['start']);
+
+                    $scheduled = true;
+                    break;
+                }
+            }
+
+            if ($scheduled) {
+                break;
+            }
+
+            if ($hasStrictCategoryWindow) {
+                $this->log("Task {$task->getId()} did not fit category window on {$currentDate}, trying next day");
+            }
+
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+        }
+    }
+
+    $this->log("Scheduler finished for user={$userId}");
+}
