@@ -123,3 +123,99 @@ Trace:
 #2 /var/www/html/public/index.php(31): Framework\Core\App->run()
 #3 {main}
 
+[2026-04-14 08:57:53] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\MisscheduledTasksController does not have a method "complete"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 08:57:55] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\MisscheduledTasksController does not have a method "complete"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 08:57:58] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\MisscheduledTasksController does not have a method "complete"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 08:58:00] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\MisscheduledTasksController does not have a method "notComplete"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 09:01:35] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\MisscheduledTasksController does not have a method "complete"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 09:05:42] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\MisscheduledTasksController does not have a method "complete"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+

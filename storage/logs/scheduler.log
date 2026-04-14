@@ -88,3 +88,22 @@
 [2026-04-04 13:45:00] Scheduler finished for user=5
 [2026-04-14 08:07:20] Controller triggering scheduler for user=5
 [2026-04-14 08:07:20] Scheduler finished for user=5
+[2026-04-14 08:28:07] Controller triggering scheduler for user=5
+[2026-04-14 08:28:07] Scheduler finished for user=5
+[2026-04-14 08:29:26] Controller triggering scheduler for user=5
+[2026-04-14 08:29:26] Scheduler finished for user=5
+[2026-04-14 08:40:52] Controller triggering scheduler for user=5
+[2026-04-14 08:40:52] Scheduler finished for user=5
+[2026-04-14 08:44:28] Controller triggering scheduler for user=5
+[2026-04-14 08:44:28] Scheduler finished for user=5
+[2026-04-14 08:45:03] Controller triggering scheduler for user=5
+[2026-04-14 08:45:03] Scheduler finished for user=5
+[2026-04-14 08:50:29] Controller triggering scheduler for user=5
+[2026-04-14 08:50:29] Scheduler finished for user=5
+[2026-04-14 08:54:59] Controller triggering scheduler for user=5
+[2026-04-14 08:54:59] Scheduler finished for user=5
+[2026-04-14 09:04:09] Controller triggering scheduler for user=23
+[2026-04-14 09:04:09] Skipping split: task has no category
+[2026-04-14 09:04:09] Scheduler finished for user=23
+[2026-04-14 09:04:56] Controller triggering scheduler for user=23
+[2026-04-14 09:04:56] Scheduler finished for user=23
