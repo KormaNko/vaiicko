@@ -562,12 +562,12 @@ class TaskController extends AppController
         $task->save();
 
         // trigger rescheduling for this user (do not fail the request if scheduler errors)
-        try {
-            $scheduler = new SchedulerService();
-            $scheduler->recalculateForUser($this->user->getIdentity()->getId());
-        } catch (\Exception $e) {
+       // try {
+        //    $scheduler = new SchedulerService();
+      //      $scheduler->recalculateForUser($this->user->getIdentity()->getId());
+     //   } catch (\Exception $e) {
             // ignore scheduler errors
-        }
+    //    }
 
         return $this->json($task);
     }
@@ -593,8 +593,8 @@ class TaskController extends AppController
 
         // trigger rescheduling for this user (do not fail the request if scheduler errors)
         try {
-            $scheduler = new SchedulerService();
-            $scheduler->recalculateForUser($this->user->getIdentity()->getId());
+           $scheduler = new SchedulerService();
+        $scheduler->recalculateForUser($this->user->getIdentity()->getId());
         } catch (\Exception $e) {
             // ignore scheduler errors
         }

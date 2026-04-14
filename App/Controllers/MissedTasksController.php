@@ -101,13 +101,6 @@ class MissedTasksController extends AppController
             return $this->json(['error' => 'Failed to mark task as completed', 'message' => $e->getMessage()], 500);
         }
 
-        // trigger reschedule for user after status change
-        try {
-            $scheduler = new SchedulerService();
-            $scheduler->recalculateForUser($this->user->getIdentity()->getId());
-        } catch (\Exception $e) {
-            // do not fail the request on scheduler errors
-        }
 
         return $this->json(['message' => 'Task marked as completed']);
     }
