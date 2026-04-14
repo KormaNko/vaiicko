@@ -52,7 +52,7 @@ class MisscheduledTasksController extends AppController
         // - planned_start > deadline AND planned_end > deadline
         // - exclude already completed tasks
         $tasks = Task::getAll(
-            '(user_id = ?) AND (deadline IS NOT NULL) AND (planned_start IS NOT NULL AND planned_end IS NOT NULL) AND (planned_start > deadline AND planned_end > deadline) AND (status != ?)',
+            '(user_id = ?) AND (deadline IS NOT NULL) AND (planned_start IS NOT NULL AND planned_end IS NOT NULL) AND (planned_start > deadline AND planned_end > deadline) AND (is_schedule_block = 0) AND (status != ?)',
             [$userId, TaskStatus::COMPLETED],
             'planned_start ASC'
         );
@@ -60,4 +60,3 @@ class MisscheduledTasksController extends AppController
         return $this->json($tasks);
     }
 }
-

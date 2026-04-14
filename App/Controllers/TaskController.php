@@ -56,7 +56,8 @@ class TaskController extends AppController
         if ($resp) return $resp;
 
         $userId = $this->user->getIdentity()->getId();
-        $tasks = Task::getAll('user_id = ?', [$userId], 'created_at DESC');
+        // do not return abstract schedule-block parent tasks
+        $tasks = Task::getAll('user_id = ? AND is_schedule_block = 0', [$userId], 'created_at DESC');
         return $this->json($tasks);
     }
 

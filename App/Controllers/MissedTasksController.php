@@ -61,7 +61,7 @@ class MissedTasksController extends AppController
 
         // We consider a task missed if planned_end is not null and planned_end <= $now
         $tasks = Task::getAll(
-            '(user_id = ?) AND (planned_end IS NOT NULL AND planned_end <= ?) AND (status != ?)',
+            '(user_id = ?) AND (planned_end IS NOT NULL AND planned_end <= ?) AND (is_schedule_block = 0) AND (status != ?)',
             [$userId, $now, TaskStatus::COMPLETED],
             'planned_end ASC'
         );

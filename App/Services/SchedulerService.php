@@ -32,7 +32,7 @@ class SchedulerService
     public function recalculateForUser(int $userId): void
     {
         $toClear = Task::getAll(
-            "user_id = ? AND is_dynamic = 1 AND status != 'completed'",
+            "user_id = ? AND is_dynamic = 1 AND is_schedule_block = 0 AND status != 'completed'",
             [$userId]
         );
 
@@ -50,7 +50,7 @@ class SchedulerService
         }
 
         $existing = Task::getAll(
-            "user_id = ? AND planned_start IS NOT NULL AND status != 'completed'",
+            "user_id = ? AND planned_start IS NOT NULL AND is_schedule_block = 0 AND status != 'completed'",
             [$userId]
         );
 
@@ -75,7 +75,7 @@ class SchedulerService
         usort($occupied, fn($a, $b) => $a['start'] <=> $b['start']);
 
         $tasks = Task::getAll(
-            "user_id = ? AND is_dynamic = 1 AND planned_start IS NULL AND status != 'completed'",
+            "user_id = ? AND is_dynamic = 1 AND is_schedule_block = 0 AND planned_start IS NULL AND status != 'completed'",
             [$userId],
             "deadline ASC, priority DESC"
         );
@@ -370,4 +370,3 @@ class SchedulerService
         }
     }
 }
-
