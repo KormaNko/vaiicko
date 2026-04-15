@@ -12,10 +12,10 @@ use Framework\Http\Responses\Response;
 /**
  * Controller for tasks that were scheduled after their deadline (planned window entirely after deadline).
  *
- * Currently implements only index() which lists such tasks for the current user.
- *
- * Assumption: a task is considered "misscheduled after deadline" when both planned_start and planned_end
- * are NOT NULL and both are strictly greater than the task's deadline (deadline NOT NULL).
+ * Previously this required both planned_start and planned_end to be strictly after the deadline.
+ * Change: consider a task misscheduled after deadline when its planned_end is after the deadline
+ * (planned_end IS NOT NULL AND planned_end > deadline). This covers cases where only the end
+ * slips past the deadline (e.g. planned_end 16:00, deadline 15:30).
  */
 class MisscheduledTasksController extends AppController
 {
@@ -34,7 +34,7 @@ class MisscheduledTasksController extends AppController
     }
 
     /**
-     * List tasks where planned_start and planned_end are both after the task's deadline.
+     * List tasks where planned_end is after the task's deadline.
      * Query params: none for now (we list for current user only).
      */
     public function index(Request $request): Response
@@ -49,11 +49,11 @@ class MisscheduledTasksController extends AppController
 
         // We treat a task as misscheduled after deadline when:
         // - deadline IS NOT NULL
-        // - planned_start IS NOT NULL AND planned_end IS NOT NULL
-        // - planned_start > deadline AND planned_end > deadline
+        // - planned_end IS NOT NULL AND planned_end > deadline
         // - exclude already completed tasks
+        // - ignore explicit schedule blocks
         $tasks = Task::getAll(
-            '(user_id = ?) AND (deadline IS NOT NULL) AND (planned_start IS NOT NULL AND planned_end IS NOT NULL) AND (planned_start > deadline AND planned_end > deadline) AND (is_schedule_block = 0) AND (status != ?)',
+            '(user_id = ?) AND (deadline IS NOT NULL) AND (planned_end IS NOT NULL) AND (planned_end > deadline) AND (is_schedule_block = 0) AND (status != ?)',
             [$userId, TaskStatus::COMPLETED],
             'planned_start ASC'
         );
