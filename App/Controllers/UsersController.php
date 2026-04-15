@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Auth\DbIdentity;
+use App\Configuration;
 use Framework\Core\BaseController;
 use Framework\Http\Request;
 use Framework\Http\Responses\JsonResponse;
@@ -10,11 +12,8 @@ use Framework\DB\Connection;
 
 class UsersController extends AppController
 {
-    // Simple constant for the admin user id allowed to access this controller
-    private const ADMIN_USER_ID = 16;
-
     /**
-     * Require that the current user is authenticated and is the admin with id = ADMIN_USER_ID.
+     * Require that the current user is authenticated and has role = 'admin'.
      * Returns a Response (403/401/redirect) when not allowed, or null when allowed.
      */
     protected function requireAdmin(Request $request): ?Response
@@ -22,8 +21,12 @@ class UsersController extends AppController
         $resp = $this->requireAuth($request);
         if ($resp) return $resp;
 
-        $currentId = $this->user->getIdentity()->getId();
-        if ($currentId !== self::ADMIN_USER_ID) {
+        $identity = $this->user->getIdentity();
+        $role = null;
+        if ($identity !== null && method_exists($identity, 'getRole')) {
+            $role = $identity->getRole();
+        }
+        if ($role !== 'admin') {
             return (new JsonResponse(['status' => 'error', 'message' => 'Forbidden']))->setStatusCode(403);
         }
         return null;
@@ -63,7 +66,7 @@ class UsersController extends AppController
         try {
             $conn = Connection::getInstance();
             // Vyberáme len verejné stĺpce, heslo nikdy nevraciame
-            $sql = "SELECT id, firstName, lastName, email, isStudent, created_at FROM `users` ORDER BY id DESC";
+            $sql = "SELECT id, firstName, lastName, email, isStudent, created_at, role FROM `users` ORDER BY id DESC";
             $stmt = $conn->prepare($sql);
             $stmt->execute([]);
             $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -93,7 +96,7 @@ class UsersController extends AppController
         }
         try {
             $conn = Connection::getInstance();
-            $sql = "SELECT id, firstName, lastName, email, isStudent, created_at FROM `users` WHERE id = ? LIMIT 1";
+            $sql = "SELECT id, firstName, lastName, email, isStudent, created_at, role FROM `users` WHERE id = ? LIMIT 1";
             $stmt = $conn->prepare($sql);
             // Execute s parametrom zabezpečí správne ošetrenie hodnoty
             $stmt->execute([$id]);
@@ -147,6 +150,8 @@ class UsersController extends AppController
         $email = trim((string)($data['email'] ?? ''));
         $password = (string)($data['password'] ?? '');
         $isStudent = isset($data['isStudent']) ? (int)$data['isStudent'] : 0;
+        // role: optional; default to 'user' when not provided
+        $role = isset($data['role']) ? trim((string)$data['role']) : 'user';
 
         // Jednoduchá server-side validácia; návrh: rozšíriť podľa požiadaviek (regex, dĺžky, atď.)
         $errors = [];
@@ -155,6 +160,8 @@ class UsersController extends AppController
         if ($email === '') $errors['email'] = 'Email is required';
         elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors['email'] = 'Invalid email';
         if ($password === '' || mb_strlen($password) < 6) $errors['password'] = 'Password must be at least 6 characters';
+        // role validation: only allow 'user' or 'admin'
+        if ($role !== null && !in_array($role, ['user', 'admin'], true)) $errors['role'] = 'Invalid role';
 
         if (!empty($errors)) {
             // Vrátime štruktúrované chyby pre frontend
@@ -165,9 +172,9 @@ class UsersController extends AppController
             $conn = Connection::getInstance();
             // Hashujeme heslo pred uložením
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO `users` (firstName, lastName, email, password, isStudent) VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO `users` (firstName, lastName, email, password, isStudent, role) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$firstName, $lastName, $email, $hash, $isStudent]);
+            $stmt->execute([$firstName, $lastName, $email, $hash, $isStudent, $role]);
             $id = $conn->lastInsertId();
             // Úspešne vytvorené -> vrátime ID a status 201
             return (new JsonResponse(['status' => 'ok', 'id' => $id]))->setStatusCode(201);
@@ -222,6 +229,7 @@ class UsersController extends AppController
         $email = isset($data['email']) ? trim((string)$data['email']) : null;
         $password = isset($data['password']) ? (string)$data['password'] : null;
         $isStudent = isset($data['isStudent']) ? (int)$data['isStudent'] : null;
+        $role = array_key_exists('role', $data) ? (is_null($data['role']) ? null : trim((string)$data['role'])) : null;
 
         // Server-side validácia len pre poskytnuté polia
         // tu som to tiez solidne generoval cez ai
@@ -233,6 +241,7 @@ class UsersController extends AppController
             elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors['email'] = 'Invalid email';
         }
         if ($password !== null && $password !== '' && mb_strlen($password) < 6) $errors['password'] = 'Password must be at least 6 characters';
+        if ($role !== null && !in_array($role, ['user', 'admin'], true)) $errors['role'] = 'Invalid role';
 
         if (!empty($errors)) return (new JsonResponse(['status' => 'error', 'errors' => $errors]))->setStatusCode(400);
 
@@ -247,6 +256,7 @@ class UsersController extends AppController
             if ($email !== null) { $sets[] = '`email` = ?'; $params[] = $email; }
             if ($password !== null && $password !== '') { $sets[] = '`password` = ?'; $params[] = password_hash($password, PASSWORD_DEFAULT); }
             if ($isStudent !== null) { $sets[] = '`isStudent` = ?'; $params[] = $isStudent; }
+            if ($role !== null) { $sets[] = '`role` = ?'; $params[] = $role; }
 
             if (empty($sets)) {
                 // Žiadne polia na aktualizáciu -> nič sa nemení
@@ -262,6 +272,20 @@ class UsersController extends AppController
                 // Žiadne záznamy neboli zmenené - buď neexistuje záznam alebo údaje neboli odlišné
                 return (new JsonResponse(['status' => 'error', 'message' => 'Not found or not modified']))->setStatusCode(404);
             }
+
+            // If the updated user is the current session user, refresh the identity stored in session so role/name changes take effect.
+            $currentIdentity = $this->user->getIdentity();
+            if ($currentIdentity !== null && $currentIdentity->getId() == $id) {
+                // reload user row
+                $stmt2 = $conn->prepare("SELECT id, firstName, lastName, email, role FROM `users` WHERE id = ? LIMIT 1");
+                $stmt2->execute([$id]);
+                $row = $stmt2->fetch(\PDO::FETCH_ASSOC);
+                if ($row) {
+                    $newIdentity = new DbIdentity((int)$row['id'], $row['firstName'] ?? '', $row['lastName'] ?? '', $row['email'] ?? '', $row['role'] ?? null);
+                    $this->app->getSession()->set(Configuration::IDENTITY_SESSION_KEY, $newIdentity);
+                }
+            }
+
             // Úspešná aktualizácia
             return (new JsonResponse(['status' => 'ok', 'message' => 'Updated']))->setStatusCode(200);
         } catch (\PDOException $e) {

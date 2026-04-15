@@ -607,3 +607,39 @@ Trace:
 #2 /var/www/html/public/index.php(31): Framework\Core\App->run()
 #3 {main}
 
+[2026-04-15 13:51:18] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Error))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Error ---
+Message: Typed property App\Auth\DbIdentity::$role must not be accessed before initialization
+File: /var/www/html/App/Auth/DbIdentity.php:43
+Trace:
+#0 /var/www/html/App/Controllers/LoginController.php(55): App\Auth\DbIdentity->getRole()
+#1 [internal function]: App\Controllers\LoginController->me(Object(Framework\Http\Request))
+#2 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#3 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#4 {main}
+
+[2026-04-15 13:51:18] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Error))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Error ---
+Message: Typed property App\Auth\DbIdentity::$role must not be accessed before initialization
+File: /var/www/html/App/Auth/DbIdentity.php:43
+Trace:
+#0 /var/www/html/App/Controllers/LoginController.php(55): App\Auth\DbIdentity->getRole()
+#1 [internal function]: App\Controllers\LoginController->me(Object(Framework\Http\Request))
+#2 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#3 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#4 {main}
+

@@ -52,6 +52,7 @@ class LoginController extends AppController
             'authenticated' => true,
             'id' => $identity->getId(),
             'name' => $identity->getName(),
+            'role' => method_exists($identity, 'getRole') ? $identity->getRole() : null,
         ]);
     }
 
@@ -105,7 +106,7 @@ class LoginController extends AppController
             //vytvorim spojenie
             $conn = Connection::getInstance();
             //pripravim si sql na hladanie usera podla emailu ale zatial ako ?
-            $sql = "SELECT id, firstName, lastName, email, password FROM users WHERE email = ? LIMIT 1";
+            $sql = "SELECT id, firstName, lastName, email, password, role FROM users WHERE email = ? LIMIT 1";
             //pripravim DB na hladanie usera zatial ako ? kvoli sql injection
             $stmt = $conn->prepare($sql);
             //spustim sql s tym ze ? nahradim hodnotou email z requestu
@@ -132,7 +133,7 @@ class LoginController extends AppController
             }
 
             // vytvorenie identity a ulozenie do session toto mi poradilo cisto AI nemal som ani tucha ako sa to robi
-            $identity = new DbIdentity((int)$user['id'], $user['firstName'] ?? '', $user['lastName'] ?? '', $user['email'] ?? '');
+            $identity = new DbIdentity((int)$user['id'], $user['firstName'] ?? '', $user['lastName'] ?? '', $user['email'] ?? '', $user['role'] ?? null);
             //Ulož prihláseného používateľa do session teda keby tu nieje tak by ma to vkuse odhlasovalo
             $session->set(Configuration::IDENTITY_SESSION_KEY, $identity);
 
