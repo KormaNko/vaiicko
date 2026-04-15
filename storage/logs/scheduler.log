@@ -283,3 +283,188 @@
 [2026-04-15 10:03:22] Controller (update) triggering scheduler for user=23
 [2026-04-15 10:03:22] Controller (update) triggering scheduler for user=23
 [2026-04-15 10:03:22] Controller (update) triggering scheduler for user=23
+[2026-04-15 16:30:37] Controller triggering scheduler for user=25
+[2026-04-15 16:30:37] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:15] Scheduler finished for user=25
+[2026-04-15 16:31:16] Scheduler finished for user=25
+[2026-04-15 16:31:16] Scheduler finished for user=25
+[2026-04-15 16:31:16] Scheduler finished for user=25
+[2026-04-15 16:31:16] Scheduler finished for user=25
+[2026-04-15 16:31:16] Scheduler finished for user=25
+[2026-04-15 16:31:33] Controller triggering scheduler for user=25
+[2026-04-15 16:31:33] Scheduler finished for user=25
+[2026-04-15 16:35:59] Could not schedule task 766 within category window up to 2026-04-17
+[2026-04-15 16:35:59] Could not schedule task 767 within category window up to 2026-04-17
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Could not schedule task 767 within category window up to 2026-04-17
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:35:59] Scheduler finished for user=25
+[2026-04-15 16:36:00] Scheduler finished for user=25
+[2026-04-15 16:36:00] Scheduler finished for user=25
+[2026-04-15 16:36:00] Scheduler finished for user=25
+[2026-04-15 16:36:10] Controller triggering scheduler for user=25
+[2026-04-15 16:36:10] Scheduler finished for user=25
+[2026-04-15 16:37:45] Controller triggering scheduler for user=25
+[2026-04-15 16:37:45] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-15 16:37:45] Scheduler finished for user=25
+[2026-04-15 16:38:12] Controller triggering scheduler for user=25
+[2026-04-15 16:38:12] Scheduler finished for user=25
+[2026-04-15 16:40:05] Scheduler finished for user=25
+[2026-04-15 16:40:05] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:40:35] Scheduler finished for user=25
+[2026-04-15 16:41:05] Controller triggering scheduler for user=25
+[2026-04-15 16:41:05] Skipping split: invalid or missing timeToComplete (NULL)
+[2026-04-15 16:41:05] Scheduler finished for user=25
+[2026-04-15 16:41:26] Scheduler finished for user=25
+[2026-04-15 16:42:01] Controller triggering scheduler for user=25
+[2026-04-15 16:42:01] Scheduler finished for user=25
+[2026-04-15 16:42:36] Scheduler finished for user=25
+[2026-04-15 16:42:56] Controller triggering scheduler for user=25
+[2026-04-15 16:42:56] Skipping split: invalid or missing timeToComplete (NULL)
+[2026-04-15 16:42:56] Scheduler finished for user=25
+[2026-04-15 16:43:07] Scheduler finished for user=25
+[2026-04-15 16:43:07] Scheduler finished for user=25
+[2026-04-15 17:00:26] Controller triggering scheduler for user=25
+[2026-04-15 17:00:26] Scheduler finished for user=25
+[2026-04-15 17:00:48] Controller triggering scheduler for user=25
+[2026-04-15 17:00:48] Could not schedule task 814 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 815 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 816 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 817 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 818 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 819 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 820 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:00:48] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 815 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 816 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 817 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 818 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 819 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 820 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 816 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 817 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 818 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 819 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 820 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 817 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 818 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 819 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 820 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 818 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 819 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 820 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 819 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 820 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 820 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 821 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 822 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Could not schedule task 823 within category window up to 2026-04-16
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:44] Scheduler finished for user=25
+[2026-04-15 17:03:59] Controller triggering scheduler for user=25
+[2026-04-15 17:03:59] Scheduler finished for user=25
+[2026-04-15 17:04:35] Controller triggering scheduler for user=25
+[2026-04-15 17:04:35] Could not schedule task 834 within category window up to 2026-04-18
+[2026-04-15 17:04:35] Scheduler finished for user=25
+[2026-04-15 17:10:30] Controller triggering scheduler for user=25
+[2026-04-15 17:10:30] Skipping split: invalid or missing timeToComplete (NULL)
+[2026-04-15 17:10:30] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:11:14] Scheduler finished for user=25
+[2026-04-15 17:13:32] Controller triggering scheduler for user=25
+[2026-04-15 17:13:32] Scheduler finished for user=25
+[2026-04-15 17:14:48] Controller triggering scheduler for user=25
+[2026-04-15 17:14:48] Scheduler finished for user=25
+[2026-04-15 17:15:01] Scheduler finished for user=25
+[2026-04-15 17:15:01] Scheduler finished for user=25
+[2026-04-15 17:15:01] Scheduler finished for user=25
+[2026-04-15 17:17:59] Scheduler finished for user=25
+[2026-04-15 17:41:32] Controller triggering scheduler for user=25
+[2026-04-15 17:41:32] Scheduler finished for user=25

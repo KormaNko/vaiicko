@@ -96,7 +96,18 @@ class SchedulerService
             $slotsNeeded = (int) ceil($minutes / $this->slotMinutes);
             $requiredSeconds = $slotsNeeded * $this->slotMinutes * 60;
 
-            while (true) {
+            // start searching from today for each task (reset per-task)
+            $currentDate = date('Y-m-d');
+
+            // determine search end: task deadline (if set) or a bounded lookahead to avoid infinite loops
+            // NOTE: ignore task deadline per user request — still bound search by a configurable lookahead
+            $maxLookaheadDays = 30; // configurable safety limit
+            $searchUntilDate = date('Y-m-d', strtotime("+$maxLookaheadDays days"));
+
+            $scheduled = false;
+
+            // search day-by-day until deadline or lookahead limit
+            while (strtotime($currentDate) <= strtotime($searchUntilDate)) {
                 $workDayStart = strtotime($this->combine($currentDate, $this->workStart));
                 $workDayEnd = strtotime($this->combine($currentDate, $this->workEnd));
 
@@ -114,6 +125,7 @@ class SchedulerService
                             $tsPt = strtotime($this->combine($currentDate, $pt));
 
                             if ($tsPf !== false && $tsPt !== false && $tsPt > $tsPf) {
+                                // keep category window strictly within workday bounds
                                 $categoryWindowStart = max($workDayStart, $tsPf);
                                 $categoryWindowEnd = min($workDayEnd, $tsPt);
 
@@ -131,19 +143,19 @@ class SchedulerService
 
                 $rangesToTry = [];
 
+                // If a category window exists, only try scheduling inside that window (strict enforcement).
                 if ($categoryWindowStart !== null && $categoryWindowEnd !== null) {
                     $rangesToTry[] = [
                         'start' => $categoryWindowStart,
                         'end' => $categoryWindowEnd
                     ];
+                } else {
+                    // no strict category window — fall back to whole workday
+                    $rangesToTry[] = [
+                        'start' => $workDayStart,
+                        'end' => $workDayEnd
+                    ];
                 }
-
-                $rangesToTry[] = [
-                    'start' => $workDayStart,
-                    'end' => $workDayEnd
-                ];
-
-                $scheduled = false;
 
                 foreach ($rangesToTry as $range) {
                     $rangeStart = $range['start'];
@@ -221,7 +233,27 @@ class SchedulerService
                     break;
                 }
 
+                // move to next day
                 $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+            }
+
+            if (!$scheduled) {
+                // If the task has a strict category window, make sure to log that it couldn't be scheduled in that window.
+                if ($task->getCategoryId() !== null) {
+                    try {
+                        $cat = Category::getOne($task->getCategoryId());
+                        if ($cat && $cat->getPlanFrom() !== null && $cat->getPlanTo() !== null) {
+                            $this->log("Could not schedule task " . $task->getId() . " within category window up to " . $searchUntilDate);
+                            // ensure planned times remain null (they already are), and move on
+                            continue;
+                        }
+                    } catch (\Throwable $e) {
+                        // ignore and continue
+                    }
+                }
+
+                // For tasks without strict category windows, we simply log the failure to schedule within lookahead/deadline
+                $this->log("Could not schedule task " . $task->getId() . " up to " . $searchUntilDate);
             }
         }
 
