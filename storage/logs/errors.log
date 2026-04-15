@@ -219,3 +219,391 @@ Trace:
 #1 /var/www/html/public/index.php(31): Framework\Core\App->run()
 #2 {main}
 
+[2026-04-14 11:49:12] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Exception))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Exception ---
+Message: Class App\Controllers\MischeduledController file /var/www/html/App/Controllers/MischeduledController.php was not found.
+File: /var/www/html/Framework/ClassLoader.php:44
+Trace:
+#0 /var/www/html/Framework/Core/Router.php(30): ClassLoader::{closure}('App\\Controllers...')
+#1 /var/www/html/Framework/Core/App.php(95): Framework\Core\Router->processURL()
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+
+[2026-04-14 11:50:47] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Exception))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Exception ---
+Message: Class App\Controllers\MischeduledController file /var/www/html/App/Controllers/MischeduledController.php was not found.
+File: /var/www/html/Framework/ClassLoader.php:44
+Trace:
+#0 /var/www/html/Framework/Core/Router.php(30): ClassLoader::{closure}('App\\Controllers...')
+#1 /var/www/html/Framework/Core/App.php(95): Framework\Core\Router->processURL()
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+
+[2026-04-14 14:04:38] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\TaskController does not have a method "removeCategory"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 14:04:38] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\TaskController does not have a method "removeCategory"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 14:04:41] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\TaskController does not have a method "removeCategory"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 14:04:41] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\TaskController does not have a method "removeCategory"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 14:04:42] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\TaskController does not have a method "removeCategory"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 14:04:42] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(TypeError))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 TypeError ---
+Message: call_user_func(): Argument #1 ($callback) must be a valid callback, class App\Controllers\TaskController does not have a method "removeCategory"
+File: /var/www/html/Framework/Core/App.php:103
+Trace:
+#0 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+
+[2026-04-14 14:07:03] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('task_id=552', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:07:03] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:07:06] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('task_id=551', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:07:06] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:07:07] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('task_id=551', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:07:07] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:07:33] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('task_id=551', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:07:33] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:08:21] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('task_id=551', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:08:21] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(JsonException))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 JsonException ---
+Message: Syntax error
+File: /var/www/html/Framework/Http/Request.php:103
+Trace:
+#0 /var/www/html/Framework/Http/Request.php(103): json_decode('', NULL, 512, 4194304)
+#1 /var/www/html/App/Controllers/MisscheduledTasksController.php(76): Framework\Http\Request->json()
+#2 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#3 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#4 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#5 {main}
+
+[2026-04-14 14:37:45] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Error))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Error ---
+Message: Call to protected method Framework\Core\Model::getTableName() from scope App\Controllers\MisscheduledTasksController
+File: /var/www/html/App/Controllers/MisscheduledTasksController.php:124
+Trace:
+#0 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#1 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+
+[2026-04-14 14:37:48] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Error))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Error ---
+Message: Call to protected method Framework\Core\Model::getTableName() from scope App\Controllers\MisscheduledTasksController
+File: /var/www/html/App/Controllers/MisscheduledTasksController.php:124
+Trace:
+#0 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#1 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+
+[2026-04-14 14:38:18] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Error))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Error ---
+Message: Call to protected method Framework\Core\Model::getTableName() from scope App\Controllers\MisscheduledTasksController
+File: /var/www/html/App/Controllers/MisscheduledTasksController.php:124
+Trace:
+#0 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#1 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+
+[2026-04-14 14:42:02] Exception: code=500 message=Internal Server Error
+--- Throwable #0 Framework\Http\HttpException ---
+Message: Internal Server Error
+File: /var/www/html/Framework/Http/HttpException.php:119
+Trace:
+#0 /var/www/html/Framework/Core/App.php(126): Framework\Http\HttpException::from(Object(Error))
+#1 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#2 {main}
+--- Throwable #1 Error ---
+Message: Call to protected method Framework\Core\Model::getTableName() from scope App\Controllers\MisscheduledTasksController
+File: /var/www/html/App/Controllers/MisscheduledTasksController.php:124
+Trace:
+#0 [internal function]: App\Controllers\MisscheduledTasksController->removeCategory(Object(Framework\Http\Request))
+#1 /var/www/html/Framework/Core/App.php(103): call_user_func(Array, Object(Framework\Http\Request))
+#2 /var/www/html/public/index.php(31): Framework\Core\App->run()
+#3 {main}
+

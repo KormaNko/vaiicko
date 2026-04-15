@@ -175,3 +175,83 @@
 [2026-04-14 11:31:38] Scheduler finished for user=23
 [2026-04-14 11:31:52] Scheduler finished for user=23
 [2026-04-14 11:31:54] Scheduler finished for user=23
+[2026-04-14 11:42:46] Controller triggering scheduler for user=23
+[2026-04-14 11:42:46] Scheduler finished for user=23
+[2026-04-14 11:49:12] Controller triggering scheduler for user=23
+[2026-04-14 11:49:12] Scheduler finished for user=23
+[2026-04-14 11:50:47] Controller triggering scheduler for user=23
+[2026-04-14 11:50:47] Scheduler finished for user=23
+[2026-04-14 11:55:10] Controller triggering scheduler for user=23
+[2026-04-14 11:55:10] Scheduler finished for user=23
+[2026-04-14 12:00:37] Controller triggering scheduler for user=23
+[2026-04-14 12:00:38] Scheduler finished for user=23
+[2026-04-14 12:10:34] Controller triggering scheduler for user=23
+[2026-04-14 12:10:34] Scheduler finished for user=23
+[2026-04-14 13:55:11] Controller triggering scheduler for user=23
+[2026-04-14 13:55:11] Scheduler finished for user=23
+[2026-04-14 13:55:31] Controller triggering scheduler for user=23
+[2026-04-14 13:55:31] Scheduler finished for user=23
+[2026-04-14 13:56:41] Controller triggering scheduler for user=23
+[2026-04-14 13:56:41] Scheduler finished for user=23
+[2026-04-14 14:04:35] Controller triggering scheduler for user=23
+[2026-04-14 14:04:35] Scheduler finished for user=23
+[2026-04-14 14:08:18] Controller triggering scheduler for user=23
+[2026-04-14 14:08:18] Scheduler finished for user=23
+[2026-04-14 14:12:36] Controller triggering scheduler for user=23
+[2026-04-14 14:12:36] Scheduler finished for user=23
+[2026-04-14 14:14:20] Controller triggering scheduler for user=23
+[2026-04-14 14:14:20] Scheduler finished for user=23
+[2026-04-14 14:16:23] Controller (update) triggering scheduler for user=23
+[2026-04-14 14:16:32] Controller (update) triggering scheduler for user=23
+[2026-04-14 14:19:49] Controller triggering scheduler for user=23
+[2026-04-14 14:19:49] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:19:49] Skipping split: category maxDuration (60) >= totalMinutes (30)
+[2026-04-14 14:19:49] Scheduler finished for user=23
+[2026-04-14 14:21:27] Controller (update) triggering scheduler for user=23
+[2026-04-14 14:21:35] Controller (update) triggering scheduler for user=23
+[2026-04-14 14:21:42] Controller (update) triggering scheduler for user=23
+[2026-04-14 14:29:04] Controller triggering scheduler for user=23
+[2026-04-14 14:29:04] Scheduler finished for user=23
+[2026-04-14 14:30:19] Controller triggering scheduler for user=23
+[2026-04-14 14:30:19] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:30:19] Skipping split: category maxDuration (60) >= totalMinutes (30)
+[2026-04-14 14:30:19] Scheduler finished for user=23
+[2026-04-14 14:30:32] Controller (update) triggering scheduler for user=23
+[2026-04-14 14:37:43] Controller triggering scheduler for user=23
+[2026-04-14 14:37:43] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:37:43] Skipping split: category maxDuration (60) >= totalMinutes (30)
+[2026-04-14 14:37:43] Scheduler finished for user=23
+[2026-04-14 14:38:24] Controller triggering scheduler for user=23
+[2026-04-14 14:38:24] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:38:24] Skipping split: category maxDuration (60) >= totalMinutes (30)
+[2026-04-14 14:38:24] Scheduler finished for user=23
+[2026-04-14 14:40:22] Controller triggering scheduler for user=23
+[2026-04-14 14:40:22] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:40:22] Skipping split: category maxDuration (60) >= totalMinutes (30)
+[2026-04-14 14:40:22] Scheduler finished for user=23
+[2026-04-14 14:41:58] Controller triggering scheduler for user=23
+[2026-04-14 14:41:58] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:41:58] Scheduler finished for user=23
+[2026-04-14 14:43:47] Scheduler finished for user=23
+[2026-04-14 14:44:09] Controller triggering scheduler for user=23
+[2026-04-14 14:44:09] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:44:09] Skipping split: category maxDuration (60) >= totalMinutes (30)
+[2026-04-14 14:44:09] Scheduler finished for user=23
+[2026-04-14 14:44:28] Scheduler finished for user=23
+[2026-04-14 14:44:32] Scheduler finished for user=23
+[2026-04-14 14:52:39] Controller triggering scheduler for user=23
+[2026-04-14 14:52:39] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:52:39] Skipping split: category maxDuration (60) >= totalMinutes (30)
+[2026-04-14 14:52:39] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:52:47] Scheduler finished for user=23
+[2026-04-14 14:53:27] Scheduler finished for user=23
+[2026-04-14 14:56:44] Controller triggering scheduler for user=23
+[2026-04-14 14:56:44] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-14 14:56:44] Scheduler finished for user=23

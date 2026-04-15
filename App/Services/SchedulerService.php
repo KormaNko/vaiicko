@@ -275,10 +275,7 @@ class SchedulerService
             return;
         }
 
-        if ($task->getCategoryId() === null) {
-            $this->log("Skipping split: task has no category");
-            return;
-        }
+        // allow tasks without a category — we'll fall back to a 60-minute max chunk below
 
         if ($task->getAtomicTask() === 1) {
             $this->log("Skipping split: task is atomic");
@@ -292,15 +289,26 @@ class SchedulerService
         }
 
 
-        $category = Category::getOne($task->getCategoryId());
-        if (!$category) {
-            $this->log("Skipping split: category record not found id=" . $task->getCategoryId());
-            return;
+        // Determine category and max duration. If category is missing or not found, fall back to default 60 minutes.
+        $category = null;
+        $max = null;
+
+        if ($task->getCategoryId() !== null) {
+            try {
+                $category = Category::getOne($task->getCategoryId());
+            } catch (\Throwable $e) {
+                $category = null;
+            }
         }
 
-        $max = $category->getMaxDuration();
-        if ($max === null || $max <= 0) {
-            $this->log("Category maxDuration invalid (" . var_export($max, true) . ") — using fallback 60 minutes");
+        if ($category) {
+            $max = $category->getMaxDuration();
+            if ($max === null || $max <= 0) {
+                $this->log("Category maxDuration invalid (" . var_export($max, true) . ") — using fallback 60 minutes");
+                $max = 60;
+            }
+        } else {
+            $this->log("No category or category not found for task — using default maxDuration 60 minutes");
             $max = 60;
         }
 
@@ -314,6 +322,7 @@ class SchedulerService
             $task->save();
         } catch (\Exception $e) {
             $this->log("Failed saving parent task before split: " . $task->getId());
+
             return;
         }
 
