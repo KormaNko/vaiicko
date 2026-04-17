@@ -541,6 +541,60 @@ class TaskController extends AppController
             }
         }
 
+        // optional planned start/end on update (accept camelCase and snake_case)
+        if (array_key_exists('planned_start', $bodyArr) || array_key_exists('plannedStart', $bodyArr) || $request->hasValue('planned_start') || $request->hasValue('plannedStart')) {
+            $plannedStartRaw = null;
+            if (array_key_exists('planned_start', $bodyArr)) {
+                $plannedStartRaw = $bodyArr['planned_start'];
+            } elseif (array_key_exists('plannedStart', $bodyArr)) {
+                $plannedStartRaw = $bodyArr['plannedStart'];
+            } elseif ($request->hasValue('planned_start')) {
+                $plannedStartRaw = $request->value('planned_start');
+            } elseif ($request->hasValue('plannedStart')) {
+                $plannedStartRaw = $request->value('plannedStart');
+            }
+
+            if ($plannedStartRaw === '') {
+                // empty string -> clear
+                $task->setPlannedStart(null);
+            } elseif ($plannedStartRaw === null) {
+                // explicit null -> clear
+                $task->setPlannedStart(null);
+            } else {
+                try {
+                    $task->setPlannedStart($plannedStartRaw);
+                } catch (InvalidArgumentException $e) {
+                    return $this->json(['error' => 'Invalid planned_start format'], 400);
+                }
+            }
+        }
+
+        if (array_key_exists('planned_end', $bodyArr) || array_key_exists('plannedEnd', $bodyArr) || $request->hasValue('planned_end') || $request->hasValue('plannedEnd')) {
+            $plannedEndRaw = null;
+            if (array_key_exists('planned_end', $bodyArr)) {
+                $plannedEndRaw = $bodyArr['planned_end'];
+            } elseif (array_key_exists('plannedEnd', $bodyArr)) {
+                $plannedEndRaw = $bodyArr['plannedEnd'];
+            } elseif ($request->hasValue('planned_end')) {
+                $plannedEndRaw = $request->value('planned_end');
+            } elseif ($request->hasValue('plannedEnd')) {
+                $plannedEndRaw = $request->value('plannedEnd');
+            }
+
+            if ($plannedEndRaw === '') {
+                // empty string -> clear
+                $task->setPlannedEnd(null);
+            } elseif ($plannedEndRaw === null) {
+                $task->setPlannedEnd(null);
+            } else {
+                try {
+                    $task->setPlannedEnd($plannedEndRaw);
+                } catch (InvalidArgumentException $e) {
+                    return $this->json(['error' => 'Invalid planned_end format'], 400);
+                }
+            }
+        }
+
         $task->setUpdatedAt(date('Y-m-d H:i:s'));
 
         // If task turned dynamic and timeToComplete is missing, set default to 30 minutes so scheduler can plan it
