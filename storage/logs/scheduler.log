@@ -545,3 +545,302 @@
 [2026-04-16 14:35:47] Controller (update) triggering scheduler for user=25
 [2026-04-17 09:02:10] Controller triggering scheduler for user=26
 [2026-04-17 09:02:10] Scheduler finished for user=26
+[2026-04-17 09:07:55] Controller triggering scheduler for user=26
+[2026-04-17 09:07:55] Scheduler finished for user=26
+[2026-04-17 09:08:57] Controller triggering scheduler for user=26
+[2026-04-17 09:08:57] No category or category not found for task — using default maxDuration 60 minutes
+[2026-04-17 09:08:57] Scheduler finished for user=26
+[2026-04-17 09:10:02] Scheduler finished for user=26
+[2026-04-17 09:10:04] Scheduler finished for user=26
+[2026-04-17 09:11:27] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:28] Scheduler finished for user=26
+[2026-04-17 09:11:43] Controller triggering scheduler for user=26
+[2026-04-17 09:11:43] Scheduler finished for user=26
+[2026-04-17 09:13:49] Controller triggering scheduler for user=26
+[2026-04-17 09:13:49] Skipping split: invalid or missing timeToComplete (NULL)
+[2026-04-17 09:13:49] Scheduler finished for user=26
+[2026-04-17 09:14:28] Scheduler finished for user=26
+[2026-04-17 09:16:57] Controller triggering scheduler for user=26
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 964 for user=26 start=2026-04-17 11:30:00 end=2026-04-17 13:30:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 965 for user=26 start=2026-04-17 13:30:00 end=2026-04-17 15:30:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 966 for user=26 start=2026-04-18 08:00:00 end=2026-04-18 09:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 953 for user=26 start=2026-04-18 09:00:00 end=2026-04-18 10:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 954 for user=26 start=2026-04-18 10:00:00 end=2026-04-18 11:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 955 for user=26 start=2026-04-18 11:00:00 end=2026-04-18 12:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 956 for user=26 start=2026-04-19 08:00:00 end=2026-04-19 09:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 957 for user=26 start=2026-04-19 09:00:00 end=2026-04-19 10:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 958 for user=26 start=2026-04-19 10:00:00 end=2026-04-19 11:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 959 for user=26 start=2026-04-19 11:00:00 end=2026-04-19 12:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 960 for user=26 start=2026-04-20 08:00:00 end=2026-04-20 09:00:00
+[2026-04-17 09:16:57] Today buffer applied: now=2026-04-17 09:16:57, buffered=2026-04-17 11:16:57, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:16:57] Scheduled task 961 for user=26 start=2026-04-20 09:00:00 end=2026-04-20 09:30:00
+[2026-04-17 09:16:57] Scheduler finished for user=26
+[2026-04-17 09:19:58] Controller triggering scheduler for user=26
+[2026-04-17 09:19:58] Skipping split: invalid or missing timeToComplete (NULL)
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 964 for user=26 start=2026-04-17 14:00:00 end=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 965 for user=26 start=2026-04-18 08:00:00 end=2026-04-18 10:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 966 for user=26 start=2026-04-17 11:30:00 end=2026-04-17 12:30:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 953 for user=26 start=2026-04-18 10:00:00 end=2026-04-18 11:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 954 for user=26 start=2026-04-18 11:00:00 end=2026-04-18 12:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 955 for user=26 start=2026-04-19 08:00:00 end=2026-04-19 09:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 956 for user=26 start=2026-04-19 09:00:00 end=2026-04-19 10:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 957 for user=26 start=2026-04-19 10:00:00 end=2026-04-19 11:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 958 for user=26 start=2026-04-19 11:00:00 end=2026-04-19 12:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 959 for user=26 start=2026-04-20 08:00:00 end=2026-04-20 09:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 960 for user=26 start=2026-04-20 09:00:00 end=2026-04-20 10:00:00
+[2026-04-17 09:19:58] Today buffer applied: now=2026-04-17 09:19:58, buffered=2026-04-17 11:19:58, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 09:19:58] Scheduled task 961 for user=26 start=2026-04-20 10:00:00 end=2026-04-20 10:30:00
+[2026-04-17 09:19:58] Scheduler finished for user=26
+[2026-04-17 12:18:09] Controller triggering scheduler for user=26
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:09] Scheduled task 964 for user=26 start=2026-04-18 08:00:00 end=2026-04-18 10:00:00
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:09] Scheduled task 965 for user=26 start=2026-04-18 10:00:00 end=2026-04-18 12:00:00
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:09] Scheduled task 966 for user=26 start=2026-04-17 14:30:00 end=2026-04-17 15:30:00
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:09] Scheduled task 953 for user=26 start=2026-04-19 08:00:00 end=2026-04-19 09:00:00
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:09] Scheduled task 954 for user=26 start=2026-04-19 09:00:00 end=2026-04-19 10:00:00
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:09] Scheduled task 955 for user=26 start=2026-04-19 10:00:00 end=2026-04-19 11:00:00
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:09] Scheduled task 956 for user=26 start=2026-04-19 11:00:00 end=2026-04-19 12:00:00
+[2026-04-17 12:18:09] Today buffer applied: now=2026-04-17 12:18:09, buffered=2026-04-17 14:18:09, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 957 for user=26 start=2026-04-20 08:00:00 end=2026-04-20 09:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 958 for user=26 start=2026-04-20 09:00:00 end=2026-04-20 10:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 959 for user=26 start=2026-04-20 10:00:00 end=2026-04-20 11:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 960 for user=26 start=2026-04-20 11:00:00 end=2026-04-20 12:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 961 for user=26 start=2026-04-17 15:30:00 end=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 969 for user=26 start=2026-04-21 08:00:00 end=2026-04-21 09:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 970 for user=26 start=2026-04-21 09:00:00 end=2026-04-21 10:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 971 for user=26 start=2026-04-21 10:00:00 end=2026-04-21 11:00:00
+[2026-04-17 12:18:10] Today buffer applied: now=2026-04-17 12:18:10, buffered=2026-04-17 14:18:10, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:10] Scheduled task 972 for user=26 start=2026-04-21 11:00:00 end=2026-04-21 11:30:00
+[2026-04-17 12:18:10] Scheduler finished for user=26
+[2026-04-17 12:18:40] Controller triggering scheduler for user=26
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 974 for user=26 start=2026-04-18 08:00:00 end=2026-04-18 10:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 975 for user=26 start=2026-04-18 10:00:00 end=2026-04-18 12:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 976 for user=26 start=2026-04-18 12:00:00 end=2026-04-18 14:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 977 for user=26 start=2026-04-18 14:00:00 end=2026-04-18 16:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 978 for user=26 start=2026-04-17 14:30:00 end=2026-04-17 15:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 964 for user=26 start=2026-04-19 08:00:00 end=2026-04-19 10:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 965 for user=26 start=2026-04-19 10:00:00 end=2026-04-19 12:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 966 for user=26 start=2026-04-17 15:00:00 end=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 953 for user=26 start=2026-04-20 08:00:00 end=2026-04-20 09:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 954 for user=26 start=2026-04-20 09:00:00 end=2026-04-20 10:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 955 for user=26 start=2026-04-20 10:00:00 end=2026-04-20 11:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 956 for user=26 start=2026-04-20 11:00:00 end=2026-04-20 12:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 957 for user=26 start=2026-04-21 08:00:00 end=2026-04-21 09:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 958 for user=26 start=2026-04-21 09:00:00 end=2026-04-21 10:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 959 for user=26 start=2026-04-21 10:00:00 end=2026-04-21 11:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 960 for user=26 start=2026-04-21 11:00:00 end=2026-04-21 12:00:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 961 for user=26 start=2026-04-22 08:00:00 end=2026-04-22 08:30:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 969 for user=26 start=2026-04-22 08:30:00 end=2026-04-22 09:30:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 970 for user=26 start=2026-04-22 09:30:00 end=2026-04-22 10:30:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 971 for user=26 start=2026-04-22 10:30:00 end=2026-04-22 11:30:00
+[2026-04-17 12:18:40] Today buffer applied: now=2026-04-17 12:18:40, buffered=2026-04-17 14:18:40, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:18:40] Scheduled task 972 for user=26 start=2026-04-22 11:30:00 end=2026-04-22 12:00:00
+[2026-04-17 12:18:40] Scheduler finished for user=26
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 974 for user=26 start=2026-04-18 08:00:00 end=2026-04-18 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 975 for user=26 start=2026-04-18 10:00:00 end=2026-04-18 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 976 for user=26 start=2026-04-18 12:00:00 end=2026-04-18 14:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 977 for user=26 start=2026-04-18 14:00:00 end=2026-04-18 16:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 978 for user=26 start=2026-04-17 14:30:00 end=2026-04-17 15:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 964 for user=26 start=2026-04-19 08:00:00 end=2026-04-19 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 965 for user=26 start=2026-04-19 10:00:00 end=2026-04-19 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 966 for user=26 start=2026-04-17 15:00:00 end=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 953 for user=26 start=2026-04-20 08:00:00 end=2026-04-20 09:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 954 for user=26 start=2026-04-20 09:00:00 end=2026-04-20 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 955 for user=26 start=2026-04-20 10:00:00 end=2026-04-20 11:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 956 for user=26 start=2026-04-20 11:00:00 end=2026-04-20 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 957 for user=26 start=2026-04-21 08:00:00 end=2026-04-21 09:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 958 for user=26 start=2026-04-21 09:00:00 end=2026-04-21 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 959 for user=26 start=2026-04-21 10:00:00 end=2026-04-21 11:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 960 for user=26 start=2026-04-21 11:00:00 end=2026-04-21 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 961 for user=26 start=2026-04-22 08:00:00 end=2026-04-22 08:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 969 for user=26 start=2026-04-22 08:30:00 end=2026-04-22 09:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 970 for user=26 start=2026-04-22 09:30:00 end=2026-04-22 10:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 971 for user=26 start=2026-04-22 10:30:00 end=2026-04-22 11:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 972 for user=26 start=2026-04-22 11:30:00 end=2026-04-22 12:00:00
+[2026-04-17 12:19:01] Scheduler finished for user=26
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 974 for user=26 start=2026-04-18 08:00:00 end=2026-04-18 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 975 for user=26 start=2026-04-18 10:00:00 end=2026-04-18 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 976 for user=26 start=2026-04-18 12:00:00 end=2026-04-18 14:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 977 for user=26 start=2026-04-18 14:00:00 end=2026-04-18 16:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 978 for user=26 start=2026-04-17 14:30:00 end=2026-04-17 15:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 964 for user=26 start=2026-04-19 08:00:00 end=2026-04-19 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 965 for user=26 start=2026-04-19 10:00:00 end=2026-04-19 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 966 for user=26 start=2026-04-17 15:00:00 end=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 953 for user=26 start=2026-04-20 08:00:00 end=2026-04-20 09:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 954 for user=26 start=2026-04-20 09:00:00 end=2026-04-20 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 955 for user=26 start=2026-04-20 10:00:00 end=2026-04-20 11:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 956 for user=26 start=2026-04-20 11:00:00 end=2026-04-20 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 957 for user=26 start=2026-04-21 08:00:00 end=2026-04-21 09:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 958 for user=26 start=2026-04-21 09:00:00 end=2026-04-21 10:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 959 for user=26 start=2026-04-21 10:00:00 end=2026-04-21 11:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 960 for user=26 start=2026-04-21 11:00:00 end=2026-04-21 12:00:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 961 for user=26 start=2026-04-22 08:00:00 end=2026-04-22 08:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 969 for user=26 start=2026-04-22 08:30:00 end=2026-04-22 09:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 970 for user=26 start=2026-04-22 09:30:00 end=2026-04-22 10:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 971 for user=26 start=2026-04-22 10:30:00 end=2026-04-22 11:30:00
+[2026-04-17 12:19:01] Today buffer applied: now=2026-04-17 12:19:01, buffered=2026-04-17 14:19:01, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:19:01] Scheduled task 972 for user=26 start=2026-04-22 11:30:00 end=2026-04-22 12:00:00
+[2026-04-17 12:19:01] Scheduler finished for user=26
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 974 for user=26 start=2026-04-18 08:00:00 end=2026-04-18 10:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 975 for user=26 start=2026-04-18 10:00:00 end=2026-04-18 12:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 976 for user=26 start=2026-04-18 12:00:00 end=2026-04-18 14:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 977 for user=26 start=2026-04-18 14:00:00 end=2026-04-18 16:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 978 for user=26 start=2026-04-17 14:30:00 end=2026-04-17 15:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 964 for user=26 start=2026-04-19 08:00:00 end=2026-04-19 10:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 965 for user=26 start=2026-04-19 10:00:00 end=2026-04-19 12:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 966 for user=26 start=2026-04-17 15:00:00 end=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 953 for user=26 start=2026-04-20 08:00:00 end=2026-04-20 09:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 954 for user=26 start=2026-04-20 09:00:00 end=2026-04-20 10:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 955 for user=26 start=2026-04-20 10:00:00 end=2026-04-20 11:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 956 for user=26 start=2026-04-20 11:00:00 end=2026-04-20 12:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 957 for user=26 start=2026-04-21 08:00:00 end=2026-04-21 09:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 958 for user=26 start=2026-04-21 09:00:00 end=2026-04-21 10:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 959 for user=26 start=2026-04-21 10:00:00 end=2026-04-21 11:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 960 for user=26 start=2026-04-21 11:00:00 end=2026-04-21 12:00:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 961 for user=26 start=2026-04-22 08:00:00 end=2026-04-22 08:30:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 969 for user=26 start=2026-04-22 08:30:00 end=2026-04-22 09:30:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 970 for user=26 start=2026-04-22 09:30:00 end=2026-04-22 10:30:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 971 for user=26 start=2026-04-22 10:30:00 end=2026-04-22 11:30:00
+[2026-04-17 12:20:11] Today buffer applied: now=2026-04-17 12:20:11, buffered=2026-04-17 14:20:11, workDayStart=2026-04-17 08:00:00, workDayEnd=2026-04-17 16:00:00
+[2026-04-17 12:20:11] Scheduled task 972 for user=26 start=2026-04-22 11:30:00 end=2026-04-22 12:00:00
+[2026-04-17 12:20:11] Scheduler finished for user=26

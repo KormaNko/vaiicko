@@ -15,6 +15,9 @@ class SchedulerService
 
     private int $slotMinutes = 30;
 
+
+    private int $firstDayBufferMinutes = 120;
+
     public function __construct(string $workStart = null, string $workEnd = null)
     {
         if ($workStart !== null) {
@@ -96,20 +99,35 @@ class SchedulerService
             $slotsNeeded = (int) ceil($minutes / $this->slotMinutes);
             $requiredSeconds = $slotsNeeded * $this->slotMinutes * 60;
 
-            // start searching from today for each task (reset per-task)
+
             $currentDate = date('Y-m-d');
 
-            // determine search end: task deadline (if set) or a bounded lookahead to avoid infinite loops
-            // NOTE: ignore task deadline per user request — still bound search by a configurable lookahead
-            $maxLookaheadDays = 30; // configurable safety limit
+
+            $maxLookaheadDays = 30;
             $searchUntilDate = date('Y-m-d', strtotime("+$maxLookaheadDays days"));
 
             $scheduled = false;
 
-            // search day-by-day until deadline or lookahead limit
+
             while (strtotime($currentDate) <= strtotime($searchUntilDate)) {
                 $workDayStart = strtotime($this->combine($currentDate, $this->workStart));
                 $workDayEnd = strtotime($this->combine($currentDate, $this->workEnd));
+
+
+                if ($currentDate === date('Y-m-d')) {
+                    $now = time();
+                    $buffered = $now + ($this->firstDayBufferMinutes * 60);
+                    // log the buffering decision for debugging
+                    $this->log("Today buffer applied: now=" . date('Y-m-d H:i:s', $now) . ", buffered=" . date('Y-m-d H:i:s', $buffered) . ", workDayStart=" . date('Y-m-d H:i:s', $workDayStart) . ", workDayEnd=" . date('Y-m-d H:i:s', $workDayEnd));
+
+                    if ($buffered >= $workDayEnd) {
+                        $this->log("Buffered time after workDayEnd, skipping today: buffered=" . date('Y-m-d H:i:s', $buffered) . ", workDayEnd=" . date('Y-m-d H:i:s', $workDayEnd));
+                        $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+                        continue;
+                    }
+
+                    $workDayStart = max($workDayStart, $buffered);
+                }
 
                 $categoryWindowStart = null;
                 $categoryWindowEnd = null;
@@ -125,7 +143,6 @@ class SchedulerService
                             $tsPt = strtotime($this->combine($currentDate, $pt));
 
                             if ($tsPf !== false && $tsPt !== false && $tsPt > $tsPf) {
-                                // keep category window strictly within workday bounds
                                 $categoryWindowStart = max($workDayStart, $tsPf);
                                 $categoryWindowEnd = min($workDayEnd, $tsPt);
 
@@ -143,14 +160,12 @@ class SchedulerService
 
                 $rangesToTry = [];
 
-                // If a category window exists, only try scheduling inside that window (strict enforcement).
                 if ($categoryWindowStart !== null && $categoryWindowEnd !== null) {
                     $rangesToTry[] = [
                         'start' => $categoryWindowStart,
                         'end' => $categoryWindowEnd
                     ];
                 } else {
-                    // no strict category window — fall back to whole workday
                     $rangesToTry[] = [
                         'start' => $workDayStart,
                         'end' => $workDayEnd
@@ -216,6 +231,9 @@ class SchedulerService
                                 $this->log("Failed scheduling task " . $task->getId());
                             }
 
+                            // log the scheduled allocation
+                            $this->log("Scheduled task " . $task->getId() . " for user=" . $task->getUserId() . " start=" . date('Y-m-d H:i:s', $taskStart) . " end=" . date('Y-m-d H:i:s', $taskEnd));
+
                             $occupied[] = [
                                 'start' => $taskStart,
                                 'end' => $taskEnd
@@ -233,12 +251,10 @@ class SchedulerService
                     break;
                 }
 
-                // move to next day
                 $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
             }
 
             if (!$scheduled) {
-                // If the task has a strict category window, make sure to log that it couldn't be scheduled in that window.
                 if ($task->getCategoryId() !== null) {
                     try {
                         $cat = Category::getOne($task->getCategoryId());
@@ -252,7 +268,6 @@ class SchedulerService
                     }
                 }
 
-                // For tasks without strict category windows, we simply log the failure to schedule within lookahead/deadline
                 $this->log("Could not schedule task " . $task->getId() . " up to " . $searchUntilDate);
             }
         }
@@ -321,7 +336,6 @@ class SchedulerService
         }
 
 
-        // Determine category and max duration. If category is missing or not found, fall back to default 60 minutes.
         $category = null;
         $max = null;
 
