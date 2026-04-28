@@ -46,17 +46,20 @@ class OptionsController extends AppController
 
         $userId = $this->user->getIdentity()->getId();
 
+        // Expect JSON body with keys exactly as frontend sends: language, theme, task_filter, task_sort
+        if (!$request->isJson()) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Expected JSON body']))->setStatusCode(400);
+        }
 
-        $body = [];
-        if ($request->isJson()) {
-            try {
-                $tmp = $request->json();
-                //vzdy chcem pracovat ako s polom tu mi tiez pomahal chat
-                if (is_object($tmp)) $tmp = (array)$tmp;
-                if (is_array($tmp)) $body = $tmp;
-            } catch (\JsonException $e) {
-                return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON']))->setStatusCode(400);
+        try {
+            $tmp = $request->json();
+            if (is_object($tmp)) $tmp = (array)$tmp;
+            if (!is_array($tmp)) {
+                return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON payload']))->setStatusCode(400);
             }
+            $body = $tmp;
+        } catch (\JsonException $e) {
+            return (new JsonResponse(['status' => 'error', 'message' => 'Invalid JSON']))->setStatusCode(400);
         }
 
         try {
@@ -65,27 +68,26 @@ class OptionsController extends AppController
                 $opts = Option::createDefaultForUser($userId);
             }
 
-            //tieto mi cisto generoval chat uz sa mi nechcelo pisat samemu
-            if (array_key_exists('language', $body) || $request->hasValue('language')) {
-                $val = $body['language'] ?? $request->value('language');
+            if (array_key_exists('language', $body)) {
+                $val = $body['language'];
                 if ($val === '') $val = null;
                 if ($val !== null) $opts->setLanguage($val);
             }
 
-            if (array_key_exists('theme', $body) || $request->hasValue('theme')) {
-                $val = $body['theme'] ?? $request->value('theme');
+            if (array_key_exists('theme', $body)) {
+                $val = $body['theme'];
                 if ($val === '') $val = null;
                 if ($val !== null) $opts->setTheme($val);
             }
 
-            if (array_key_exists('task_filter', $body) || array_key_exists('taskFilter', $body) || $request->hasValue('task_filter') || $request->hasValue('taskFilter')) {
-                $val = $body['task_filter'] ?? $body['taskFilter'] ?? $request->value('task_filter') ?? $request->value('taskFilter');
+            if (array_key_exists('task_filter', $body)) {
+                $val = $body['task_filter'];
                 if ($val === '') $val = null;
                 if ($val !== null) $opts->setTaskFilter($val);
             }
 
-            if (array_key_exists('task_sort', $body) || array_key_exists('taskSort', $body) || $request->hasValue('task_sort') || $request->hasValue('taskSort')) {
-                $val = $body['task_sort'] ?? $body['taskSort'] ?? $request->value('task_sort') ?? $request->value('taskSort');
+            if (array_key_exists('task_sort', $body)) {
+                $val = $body['task_sort'];
                 if ($val === '') $val = null;
                 if ($val !== null) $opts->setTaskSort($val);
             }
@@ -101,4 +103,3 @@ class OptionsController extends AppController
         }
     }
 }
-

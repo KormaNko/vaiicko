@@ -164,16 +164,13 @@ class Option extends Model
     {
         return [
             'id' => $this->id,
-            'userId' => $this->userId,
             'user_id' => $this->userId,
             'language' => $this->language,
             'theme' => $this->theme,
-            'taskFilter' => $this->taskFilter,
             'task_filter' => $this->taskFilter,
-            'taskSort' => $this->taskSort,
             'task_sort' => $this->taskSort,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
+            'created_at' => $this->createdAt,
+            'updated_at' => $this->updatedAt,
         ];
     }
 }
