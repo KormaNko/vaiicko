@@ -10,11 +10,11 @@ use Framework\Http\Responses\RedirectResponse;
 use Framework\Http\Responses\Response;
 
 //  Toto je rodicovksy kontroler pre Vsetky ostatne ktore musia mat kontrolu prihlasenia  redirect na login
-//toto vymyslal hlavne ai
+//toto vymyslalo hlavne ai
 abstract class AppController extends BaseController
 {
     // Tuto metodu pouzivam aby som zistil ci ze uzivatel prihlaseny alebo nie a podla toho mu buď povolim pokracovat alebo ho presmerujem na login stranku
-    // tuto triedu mi poradil chat AI ked som bol zufaly a nevedel som ako to prepojit kvoli tym roznym portom pre react a php snazil som sa jej samozrjme pochopit na 100%
+    // tuto triedu mi poradil chat AI a nevedel som ako to prepojit kvoli tym roznym portom pre react a php snazil som sa jej samozrjme pochopit na 100%
     protected function requireAuth(Request $request): ?Response
     {
         if ($this->user->isLoggedIn()) {

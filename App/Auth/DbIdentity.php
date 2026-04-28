@@ -34,10 +34,7 @@ class DbIdentity implements IIdentity
         return $this->email;
     }
 
-    /**
-     * Return role string (e.g. 'user' or 'admin') or null when not set.
-     * Kept nullable to match DB that may have NULL for older rows.
-     */
+
     public function getRole(): ?string
     {
         return $this->role;
