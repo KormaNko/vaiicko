@@ -101,6 +101,11 @@ class MissedTasksController extends AppController
             return $this->json(['error' => 'Task not found or access denied'], 404);
         }
 
+        // If the task is not dynamic, don't change its scheduling — nothing to do here
+        if ((int)$task->getIsDynamic() === 0) {
+            return $this->json(['message' => 'Task is not dynamic; no action taken', 'task' => $task]);
+        }
+
         try {
             $task->setPlannedStart(null);
             $task->setPlannedEnd(null);
