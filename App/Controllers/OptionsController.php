@@ -92,6 +92,26 @@ class OptionsController extends AppController
                 if ($val !== null) $opts->setTaskSort($val);
             }
 
+            // new work day start/end (expect keys exactly: work_day_start, work_day_end)
+            if (array_key_exists('work_day_start', $body)) {
+                $val = $body['work_day_start'];
+                if ($val === '') {
+                    // empty -> reset to DB/default value
+                    $opts->setWorkDayStart('08:00:00');
+                } else {
+                    $opts->setWorkDayStart($val);
+                }
+            }
+
+            if (array_key_exists('work_day_end', $body)) {
+                $val = $body['work_day_end'];
+                if ($val === '') {
+                    $opts->setWorkDayEnd('16:00:00');
+                } else {
+                    $opts->setWorkDayEnd($val);
+                }
+            }
+
             $opts->setUpdatedAt(date('Y-m-d H:i:s'));
             $opts->save();
 

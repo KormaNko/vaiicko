@@ -20,6 +20,8 @@ class Option extends Model
         'theme' => 'theme',
         'task_filter' => 'taskFilter',
         'task_sort' => 'taskSort',
+        'work_day_start' => 'workDayStart',
+        'work_day_end' => 'workDayEnd',
         'created_at' => 'createdAt',
         'updated_at' => 'updatedAt',
     ];
@@ -30,6 +32,8 @@ class Option extends Model
     protected string $theme; // 'light' | 'dark'
     protected string $taskFilter; // 'all'|'pending'|'in_progress'|'completed'
     protected string $taskSort; // enum values
+    protected string $workDayStart; // HH:MM:SS
+    protected string $workDayEnd;   // HH:MM:SS
     protected string $createdAt;
     protected string $updatedAt;
 
@@ -49,6 +53,8 @@ class Option extends Model
         $opt->setTheme('light');
         $opt->setTaskFilter('all');
         $opt->setTaskSort('none');
+        $opt->setWorkDayStart('08:00:00');
+        $opt->setWorkDayEnd('16:00:00');
         $opt->setCreatedAt(date('Y-m-d H:i:s'));
         $opt->setUpdatedAt(date('Y-m-d H:i:s'));
         $opt->save();
@@ -140,6 +146,56 @@ class Option extends Model
         $this->taskSort = $sort;
     }
 
+    // Normalize time values to HH:MM:SS and validate
+    private static function normalizeTimeString(?string $val): ?string
+    {
+        if ($val === null) return null;
+        $v = trim($val);
+        if ($v === '') return null;
+        // Accept HH:MM or HH:MM:SS
+        if (preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d(?: :[0-5]\d)?$/', $v)) {
+            // accidental space before seconds handled by regex with space - but we'll normalize
+        }
+        // Replace space between date/time if any (not expected) and ensure format
+        $parts = explode(':', $v);
+        if (count($parts) === 2) {
+            // add seconds
+            $v = $v . ':00';
+        }
+        if (!preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/', $v)) {
+            throw new \InvalidArgumentException('Invalid time format, expected HH:MM or HH:MM:SS');
+        }
+        return $v;
+    }
+
+    public function getWorkDayStart(): string
+    {
+        return $this->workDayStart;
+    }
+
+    public function setWorkDayStart(string $time): void
+    {
+        $t = self::normalizeTimeString($time);
+        if ($t === null) {
+            throw new \InvalidArgumentException('work_day_start cannot be empty');
+        }
+        $this->workDayStart = $t;
+    }
+
+    public function getWorkDayEnd(): string
+    {
+        return $this->workDayEnd;
+    }
+
+    public function setWorkDayEnd(string $time): void
+    {
+        $t = self::normalizeTimeString($time);
+        if ($t === null) {
+            throw new \InvalidArgumentException('work_day_end cannot be empty');
+        }
+        $this->workDayEnd = $t;
+    }
+
     public function getCreatedAt(): string
     {
         return $this->createdAt;
@@ -169,6 +225,8 @@ class Option extends Model
             'theme' => $this->theme,
             'task_filter' => $this->taskFilter,
             'task_sort' => $this->taskSort,
+            'work_day_start' => $this->workDayStart,
+            'work_day_end' => $this->workDayEnd,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
         ];
