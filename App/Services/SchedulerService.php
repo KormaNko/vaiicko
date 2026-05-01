@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Task;
 use App\Models\Category;
+use App\Models\Option;
 use InvalidArgumentException;
 
 
@@ -34,6 +35,22 @@ class SchedulerService
 
     public function recalculateForUser(int $userId): void
     {
+        $workStart = $this->workStart;
+        $workEnd = $this->workEnd;
+        try {
+            $opts = Option::getByUserId($userId);
+            if ($opts !== null) {
+                $ws = $opts->getWorkDayStart();
+                $we = $opts->getWorkDayEnd();
+                if ($ws) $workStart = $ws;
+                if ($we) $workEnd = $we;
+            }
+        } catch (\Throwable $e) {
+            $this->log('Failed reading user options for scheduler, using defaults: ' . $e->getMessage());
+            $workStart = $this->workStart;
+            $workEnd = $this->workEnd;
+        }
+
         $toClear = Task::getAll(
             "user_id = ? AND is_dynamic = 1 AND is_schedule_block = 0 AND status != 'completed'",
             [$userId]
@@ -110,8 +127,8 @@ class SchedulerService
 
 
             while (strtotime($currentDate) <= strtotime($searchUntilDate)) {
-                $workDayStart = strtotime($this->combine($currentDate, $this->workStart));
-                $workDayEnd = strtotime($this->combine($currentDate, $this->workEnd));
+                $workDayStart = strtotime($this->combine($currentDate, $workStart));
+                $workDayEnd = strtotime($this->combine($currentDate, $workEnd));
 
 
                 if ($currentDate === date('Y-m-d')) {

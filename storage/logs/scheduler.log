@@ -15196,3 +15196,24 @@
 [2026-05-01 08:33:14] Today buffer applied: now=2026-05-01 08:33:14, buffered=2026-05-01 10:33:14, workDayStart=2026-05-01 08:00:00, workDayEnd=2026-05-01 16:00:00
 [2026-05-01 08:33:14] Scheduled task 1109 for user=26 start=2026-05-03 15:00:00 end=2026-05-03 15:30:00
 [2026-05-01 08:33:14] Scheduler finished for user=26
+[2026-05-01 08:48:46] Controller triggering scheduler for user=26
+[2026-05-01 08:48:46] Skipping split: invalid or missing timeToComplete (NULL)
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1101 for user=26 start=2026-05-01 13:00:00 end=2026-05-01 14:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1102 for user=26 start=2026-05-01 14:00:00 end=2026-05-01 15:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1103 for user=26 start=2026-05-01 15:00:00 end=2026-05-01 16:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1104 for user=26 start=2026-05-01 16:00:00 end=2026-05-01 17:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1105 for user=26 start=2026-05-01 17:00:00 end=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1106 for user=26 start=2026-05-02 13:00:00 end=2026-05-02 14:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1107 for user=26 start=2026-05-02 14:00:00 end=2026-05-02 15:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1108 for user=26 start=2026-05-02 15:00:00 end=2026-05-02 16:00:00
+[2026-05-01 08:48:46] Today buffer applied: now=2026-05-01 08:48:46, buffered=2026-05-01 10:48:46, workDayStart=2026-05-01 06:00:00, workDayEnd=2026-05-01 18:00:00
+[2026-05-01 08:48:46] Scheduled task 1109 for user=26 start=2026-05-02 16:00:00 end=2026-05-02 16:30:00
+[2026-05-01 08:48:46] Scheduler finished for user=26
