@@ -152,9 +152,16 @@ class LoginController extends AppController
             $payload = [
                 'status' => 'ok',
                 'message' => 'Prihlásenie úspešné',
+                'authenticated' => true,
                 'id' => $identity->getId(),
-                'name' => $identity->getName()
+                'name' => $identity->getName(),
+                'role' => $user['role'] ?? null,
             ];
+
+            // Pridanie csrf_token do payloadu, ak bol vygenerovaný
+            if ($csrf !== null) {
+                $payload['csrf_token'] = $csrf;
+            }
 
             return (new JsonResponse($payload))->setStatusCode(200);
 

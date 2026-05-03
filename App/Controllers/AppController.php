@@ -42,7 +42,7 @@ abstract class AppController extends BaseController
             header('Access-Control-Allow-Origin: ' . $origin);   // nastavim povoleny origin
             header('Vary: Origin'); // pridam vary header aby cache servery vedeli ze odpoved sa lisi podla originu
             header('Access-Control-Allow-Credentials: true'); // povolim posielanie cookies
-            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With'); // povolim potrebne hlavičky
+            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token'); // povolim potrebne hlavičky
             header('Access-Control-Allow-Methods: GET, POST, OPTIONS'); // povolim metody
         }
     }
