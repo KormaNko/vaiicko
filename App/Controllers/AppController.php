@@ -18,7 +18,21 @@ abstract class AppController extends BaseController
     protected function requireAuth(Request $request): ?Response
     {
         if ($this->user->isLoggedIn()) {
-            return null;    // ak je pozuviatel prihlaseny tak sa nedeje nic a porkacuje normalne
+            // Minimal CSRF protection: for mutating requests require X-CSRF-Token header to match session value
+            $method = $request->server('REQUEST_METHOD') ?? 'GET';
+            $method = strtoupper($method);
+            if (in_array($method, ['POST', 'PUT', 'DELETE', 'PATCH'], true)) {
+                $session = $this->app->getSession();
+                $expected = $session->get('csrf_token');
+                $sent = $request->server('HTTP_X_CSRF_TOKEN') ?? null;
+                // use hash_equals for safe comparison when both are strings
+                $valid = is_string($expected) && is_string($sent) && hash_equals($expected, $sent);
+                if (!$valid) {
+                    // For AJAX/JSON clients return JSON 403, otherwise return same JSON (minimal change)
+                    return (new JsonResponse(['status' => 'error', 'message' => 'Invalid CSRF token']))->setStatusCode(403);
+                }
+            }
+            return null;    // ak je pouzivatel prihlaseny tak sa nedeje nic a porkacuje normalne
         }
 
         // ak bola poziadavka ajax alebo json tak vratim json odpoved s chybou 401 nehadzem ho na login stranku
