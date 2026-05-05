@@ -6,6 +6,7 @@ CREATE TABLE `users` (
                          `password` varchar(255) NOT NULL,
                          `isStudent` tinyint(1) NOT NULL DEFAULT 0,
                          `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                         `role` varchar(50) NOT NULL DEFAULT 'user',
                          PRIMARY KEY (`id`),
                          UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci

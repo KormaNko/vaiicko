@@ -7,7 +7,9 @@ CREATE TABLE `options` (
                            `task_sort` enum('none','priority_asc','priority_desc','title_asc','title_desc','deadline_asc','deadline_desc') NOT NULL DEFAULT 'none',
                            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
                            `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                           `work_day_start` time DEFAULT '08:00:00',
+                           `work_day_end` time DEFAULT '16:00:00',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `uq_options_user` (`user_id`),
                            CONSTRAINT `fk_options_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci

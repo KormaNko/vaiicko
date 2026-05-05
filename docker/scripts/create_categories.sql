@@ -5,8 +5,11 @@ CREATE TABLE `categories` (
                               `color` varchar(7) DEFAULT NULL,
                               `created_at` datetime NOT NULL DEFAULT current_timestamp(),
                               `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                              `plan_from` time DEFAULT NULL,
+                              `plan_to` time DEFAULT NULL,
+                              `max_duration` int(10) unsigned DEFAULT NULL,
                               PRIMARY KEY (`id`),
                               UNIQUE KEY `uq_user_name` (`user_id`,`name`),
                               KEY `idx_user_id` (`user_id`),
                               CONSTRAINT `fk_categories_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
