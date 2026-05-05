@@ -163,10 +163,15 @@ class SchedulerService
                                 $categoryWindowStart = max($workDayStart, $tsPf);
                                 $categoryWindowEnd = min($workDayEnd, $tsPt);
 
+
                                 if ($categoryWindowEnd <= $categoryWindowStart) {
-                                    $categoryWindowStart = null;
-                                    $categoryWindowEnd = null;
+                                    $this->log("Category window {$pf}-{$pt} has no overlap with workday for {$currentDate}, skipping date");
+                                    $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+                                    continue;
                                 }
+
+                                // diagnostic log for category window computation
+                                $this->log("Task " . $task->getId() . " category window computed for {$currentDate}: pf={$pf} pt={$pt} tsPf=" . date('Y-m-d H:i:s', $tsPf) . " tsPt=" . date('Y-m-d H:i:s', $tsPt) . " categoryStart=" . date('Y-m-d H:i:s', $categoryWindowStart) . " categoryEnd=" . date('Y-m-d H:i:s', $categoryWindowEnd) . " workDayStart=" . date('Y-m-d H:i:s', $workDayStart) . " workDayEnd=" . date('Y-m-d H:i:s', $workDayEnd));
                             }
                         }
                     } catch (\Throwable $e) {
@@ -183,6 +188,11 @@ class SchedulerService
                         'end' => $categoryWindowEnd
                     ];
                 } else {
+
+                    if ($task->getCategoryId() !== null) {
+                        $this->log("Falling back to full workday for task " . $task->getId() . " on {$currentDate} (no valid category window)");
+                    }
+
                     $rangesToTry[] = [
                         'start' => $workDayStart,
                         'end' => $workDayEnd
